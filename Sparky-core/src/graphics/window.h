@@ -8,6 +8,7 @@ namespace sparky {	namespace graphics {
 
 #define MAX_KEYS	1024
 #define MAX_BUTTONS 32
+	//nothing
 
 	class Window {
 	private:
