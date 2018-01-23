@@ -14,8 +14,11 @@ int main() {
 	glBindVertexArray(vao);
 
 	while (!window.closed()) {
-		cout << window.getWidth() << " " << window.getHeight() << endl;
+		// cout << window.getWidth() << " " << window.getHeight() << endl;
 		window.clear();
+		double x, y;
+		window.getMousePosition(x, y);
+		cout << x << ", " << y << endl;
 #if 1
 		glBegin(GL_QUADS);
 		glVertex2f(-0.5f, -0.5f);
