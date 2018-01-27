@@ -1,5 +1,5 @@
 #include "src\graphics\window.h"
-#include "src\maths\vec2.h"
+#include "src\maths\maths.h"
 using namespace std;
 
 int main() {
@@ -16,11 +16,16 @@ int main() {
 	glBindVertexArray(vao);
 
 	vec2 vector(1.0f, 2.0f);
+	vec2 vector1(2.0f, 3.0f);
+	vec3 v(1.0f, 2.0f, 3.0f);
+	vec3 d(2, 3, 4);
+	
+	v *= d;
 
 	while (!window.closed()) {
 		// cout << window.getWidth() << " " << window.getHeight() << endl;
 		window.clear();
-		cout << vector << endl;
+		cout << v << endl;
 #if 1
 		glBegin(GL_QUADS);
 		glVertex2f(-0.5f, -0.5f);
