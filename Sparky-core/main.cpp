@@ -22,6 +22,9 @@ int main() {
 	
 	v *= d;
 
+	mat4 position = mat4::translation(vec3(2, 3, 4));
+	position *= mat4::identity();
+
 	while (!window.closed()) {
 		// cout << window.getWidth() << " " << window.getHeight() << endl;
 		window.clear();
