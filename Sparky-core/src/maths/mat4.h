@@ -3,12 +3,18 @@
 
 #include "maths_func.h"
 #include "vec3.h"
+#include "vec4.h"
 
 namespace sparky { namespace maths {
 
 	struct mat4
 	{
-		float elements[4 * 4];
+		union
+		{
+			float elements[4 * 4];
+			vec4 columns[4];
+		};
+
 		mat4();
 		mat4(float diagonal);
 
