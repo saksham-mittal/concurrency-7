@@ -8,7 +8,7 @@ int main() {
 	using namespace maths;
 
 
-	Window window("Sparky", 960, 540);
+	Window window("Sparky!", 960, 540);
 	glClearColor(0.2f, 0.3f, .8f, 1.0f);
 
 	GLuint vao;
