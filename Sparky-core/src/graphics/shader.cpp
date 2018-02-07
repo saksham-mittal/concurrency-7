@@ -11,13 +11,20 @@ namespace sparky { namespace graphics {
 		m_ShaderID = load();
 	}
 
+	Shader::~Shader() {
+		glDeleteProgram(m_ShaderID);
+	}
+
 	GLuint Shader::load() {
 		GLuint program = glCreateProgram();
 		GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
 		GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
 	
-		const char* vertSource = read_file(m_VertPath).c_str();
-		const char* fragSource = read_file(m_FragPath).c_str();
+		string vertSourceString = FileUtils::read_file(m_VertPath);
+		string fragSourceString = FileUtils::read_file(m_FragPath);
+
+		const char* vertSource = vertSourceString.c_str();
+		const char* fragSource = fragSourceString.c_str();
 
 		glShaderSource(vertex, 1, &vertSource, NULL);
 		glCompileShader(vertex);
@@ -58,6 +65,43 @@ namespace sparky { namespace graphics {
 		glDeleteShader(fragment);
 
 		return program;
+	}
+
+	GLint Shader::getUniformLocation(const GLchar* name) {
+		return glGetUniformLocation(m_ShaderID, name);
+	}
+
+	void Shader::setUniform1f(const GLchar* name, float value) {
+		glUniform1f(getUniformLocation(name), value);
+	}
+
+	void Shader::setUniform1i(const GLchar* name, int value) {
+		glUniform1i(getUniformLocation(name), value);
+	}
+
+	void Shader::setUniform2f(const GLchar* name, const maths::vec2& vector) {
+		glUniform2f(getUniformLocation(name), vector.x, vector.y);
+	}
+
+	void Shader::setUniform3f(const GLchar* name, const maths::vec3& vector) {
+		glUniform3f(getUniformLocation(name), vector.x, vector.y, vector.z);
+	}
+
+	void Shader::setUniform4f(const GLchar* name, const maths::vec4& vector) {
+		glUniform4f(getUniformLocation(name), vector.x, vector.y, vector.z, vector.w);
+	}
+
+	void Shader::setUniformMat4(const GLchar* name, const maths::mat4& matrix){
+		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, matrix.elements);
+	}
+
+
+	void Shader::enable() const {
+		glUseProgram(m_ShaderID);
+	}
+
+	void Shader::disable() const {
+		glUseProgram(0);
 	}
 
 } }
