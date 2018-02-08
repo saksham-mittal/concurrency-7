@@ -1,8 +1,14 @@
 #include "src\graphics\window.h"
 #include "src\maths\maths.h"
+#include "src\graphics\shader.h"
+
+#include "src\graphics\buffers\buffer.h"
+#include "src\graphics\buffers\indexbuffer.h"
+#include "src\graphics\buffers\vertexarray.h"
+#include <SDL/SDL.h>
 using namespace std;
 
-int main() {
+/*int main() {
 	using namespace sparky;
 	using namespace graphics;
 	using namespace maths;
@@ -101,5 +107,12 @@ int main() {
 		window.update();
 	}
 	
+	return 0;
+}*/
+
+int main(int argc, char** argv)
+{
+	SDL_Init(SDL_INIT_EVERYTHING);
+	system("pause");
 	return 0;
 }
