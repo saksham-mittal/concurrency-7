@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <iostream>
 #include <string>
+#include "sprite.h"
 
 enum class GameState {PLAY, EXIT};
 
@@ -25,5 +26,7 @@ private:
 	int _screenWidth;
 	int _screenHeight;
 	GameState _gameState;
+
+	sprite _sprite;
 };
 
