@@ -1,11 +1,12 @@
-#include "src\graphics\window.h"
+/*#include "src\graphics\window.h"
 #include "src\maths\maths.h"
 #include "src\graphics\shader.h"
 
 #include "src\graphics\buffers\buffer.h"
 #include "src\graphics\buffers\indexbuffer.h"
 #include "src\graphics\buffers\vertexarray.h"
-#include <SDL/SDL.h>
+#include <SDL/SDL.h>*/
+#include "MainGame.h"
 using namespace std;
 
 /*int main() {
@@ -112,7 +113,8 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	SDL_Init(SDL_INIT_EVERYTHING);
-	system("pause");
+	MainGame mainGame;
+	mainGame.run();
+	//system("pause");
 	return 0;
 }
