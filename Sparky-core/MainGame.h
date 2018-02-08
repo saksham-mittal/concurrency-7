@@ -4,6 +4,9 @@
 #include <GL/glew.h>
 #include <iostream>
 #include <string>
+
+#include "GLSLProgram.h"
+
 #include "sprite.h"
 
 enum class GameState {PLAY, EXIT};
@@ -19,6 +22,7 @@ public:
 
 private:
 	void initSystems();
+	void initShaders();
 	void processInput();
 	void gameLoop();
 	void drawGame();
@@ -28,5 +32,7 @@ private:
 	GameState _gameState;
 
 	sprite _sprite;
+
+	GLSLProgram _colorProgram;
 };
 
