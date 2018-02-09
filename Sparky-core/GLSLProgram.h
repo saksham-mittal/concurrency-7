@@ -15,6 +15,8 @@ public:
 
 	void linkShaders();
 
+	GLint getUniformLocation(const std::string& uniformName);
+
 	void use();
 	void unuse();
 private:

@@ -1,12 +1,14 @@
 #include "MainGame.h"
 #include "Errors.h"
-
-MainGame::MainGame()
+#include "ImageLoader.h"
+MainGame::MainGame() : 
+	_time(0.0f),
+	_screenWidth(1024),
+	_screenHeight(768),
+	_window(nullptr),
+	_gameState(GameState::PLAY)
 {
-	_window = nullptr;
-	_screenWidth = 1024;
-	_screenHeight = 728;
-	_gameState = GameState::PLAY;
+
 }
 
 
@@ -19,6 +21,8 @@ void MainGame::run()
 	initSystems();
 
 	_sprite.init(-1.0f, -1.0f, 2.0f, 2.0f);
+
+	_playerTexture = ImageLoader::loadPNG("Textures/pngs/swinging_spikes/swinging_spike_block.png");
 
 	gameLoop();
 }
@@ -54,6 +58,7 @@ void MainGame::initShaders() {
 	_colorProgram.compileShaders("Shaders/colorShading.vert", "Shaders/colorShading.frag");
 	_colorProgram.addAttribute("vertexPosition");
 	_colorProgram.addAttribute("vertexColor");
+	_colorProgram.addAttribute("vertexUV");
 	_colorProgram.linkShaders();
 }
 
@@ -62,6 +67,7 @@ void MainGame::gameLoop()
 	while (_gameState != GameState::EXIT)
 	{
 		processInput();
+		_time += 0.01;
 		drawGame();
 	}
 }
@@ -86,13 +92,22 @@ void MainGame::processInput()
 
 void MainGame::drawGame()
 {
+
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	_colorProgram.use();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _playerTexture.id);
+	GLint textureLocation = _colorProgram.getUniformLocation("mySampler");
+	glUniform1i(textureLocation, 0);
+
+	GLint timeLocation = _colorProgram.getUniformLocation("time");
+	glUniform1f(timeLocation, _time);
 
 	_sprite.draw();
 
+	glBindTexture(GL_TEXTURE_2D, 0);
 	_colorProgram.unuse();
 
 	SDL_GL_SwapWindow(_window);

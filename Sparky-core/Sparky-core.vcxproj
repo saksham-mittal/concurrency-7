@@ -137,9 +137,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GLSLProgram.cpp" />
+    <ClCompile Include="ImageLoader.cpp" />
+    <ClCompile Include="IOManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="Errors.cpp" />
+    <ClCompile Include="picoPNG.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="src\graphics\buffers\buffer.cpp" />
     <ClCompile Include="src\graphics\buffers\indexbuffer.cpp" />
@@ -153,8 +156,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLSLProgram.h" />
+    <ClInclude Include="GLTexture.h" />
+    <ClInclude Include="ImageLoader.h" />
+    <ClInclude Include="IOManager.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Errors.h" />
+    <ClInclude Include="picoPNG.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="src\graphics\buffers\buffer.h" />
     <ClInclude Include="src\graphics\buffers\indexbuffer.h" />
