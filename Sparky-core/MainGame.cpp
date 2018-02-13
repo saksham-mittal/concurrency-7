@@ -1,6 +1,5 @@
 #include "MainGame.h"
 #include "Errors.h"
-#include "ImageLoader.h"
 MainGame::MainGame() : 
 	_time(0.0f),
 	_screenWidth(1024),
@@ -20,9 +19,14 @@ void MainGame::run()
 {
 	initSystems();
 
-	_sprite.init(-1.0f, -1.0f, 2.0f, 2.0f);
+	_sprites.push_back(new sprite());
+	_sprites.back()->init(-1.0f, -1.0f, 1.0f, 1.0f, "Textures/PNG/CharacterRight_Standing.png");
 
-	_playerTexture = ImageLoader::loadPNG("Textures/pngs/swinging_spikes/swinging_spike_block.png");
+	_sprites.push_back(new sprite());
+	_sprites.back()->init(0.0f, -1.0f, 1.0f, 1.0f, "Textures/PNG/CharacterRight_Standing.png");
+
+
+	//_playerTexture = ImageLoader::loadPNG("Textures/PNG/CharacterRight_Standing.png");
 
 	gameLoop();
 }
@@ -84,7 +88,7 @@ void MainGame::processInput()
 			break;
 
 		case SDL_MOUSEMOTION:
-			std::cout << evnt.motion.x << "," << evnt.motion.y << std::endl;
+			//std::cout << evnt.motion.x << "," << evnt.motion.y << std::endl;
 			break;
 		}
 	}
@@ -98,14 +102,14 @@ void MainGame::drawGame()
 
 	_colorProgram.use();
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, _playerTexture.id);
 	GLint textureLocation = _colorProgram.getUniformLocation("mySampler");
 	glUniform1i(textureLocation, 0);
 
 	GLint timeLocation = _colorProgram.getUniformLocation("time");
 	glUniform1f(timeLocation, _time);
 
-	_sprite.draw();
+	for (int i = 0; i < _sprites.size(); i++)
+		_sprites[i]->draw();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	_colorProgram.unuse();
