@@ -35,6 +35,9 @@ void MainGame::initSystems()
 {
 	//Initialize SDL
 	SDL_Init(SDL_INIT_EVERYTHING);
+
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
 	_window = SDL_CreateWindow("GameEngine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHeight, SDL_WINDOW_OPENGL);
 	if (_window == nullptr)
 	{
@@ -53,7 +56,11 @@ void MainGame::initSystems()
 		fatalError("Could not intialize glew!");
 	}
 
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	//check openGl version
+	std::printf("*** OPENGL Version  %s    *** \n", glGetString(GL_VERSION));
+
+	//set VSYNC
+	SDL_GL_SetSwapInterval(0);
 	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 
 	initShaders();
