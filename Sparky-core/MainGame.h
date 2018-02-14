@@ -2,12 +2,17 @@
 
 #include <SDL/SDL.h>
 #include <GL/glew.h>
+
 #include <iostream>
 #include <string>
-#include "GLTexture.h"
-#include "GLSLProgram.h"
+
+#include <ArrowsIOEngine/GLTexture.h>
+#include <ArrowsIOEngine/GLSLProgram.h>
+
 #include <vector>
-#include "sprite.h"
+#include <ArrowsIoEngine/sprite.h>
+#include <ArrowsIoEngine\window.h>
+#include <ArrowsIoEngine\ArrowsIoEngine.h>
 
 enum class GameState {PLAY, EXIT};
 
@@ -27,15 +32,15 @@ private:
 	void gameLoop();
 	void drawGame();
 	void calculateFPS();
-	SDL_Window * _window;
+	ArrowsIoEngine::window _window;
 	int _screenWidth;
 	int _screenHeight;
 	GameState _gameState;
 
 	
-	std::vector<sprite*> _sprites;
+	std::vector<ArrowsIoEngine::sprite*> _sprites;
 
-	GLSLProgram _colorProgram;
+	ArrowsIoEngine::GLSLProgram _colorProgram;
 
 	float _time;
 	float _fps;
