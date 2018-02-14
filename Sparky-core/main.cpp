@@ -7,6 +7,7 @@
 #include "src\graphics\buffers\vertexarray.h"
 #include <SDL/SDL.h>*/
 #include "MainGame.h"
+
 using namespace std;
 
 /*int main() {
