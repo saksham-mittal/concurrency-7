@@ -13,6 +13,7 @@
 #include <ArrowsIoEngine/sprite.h>
 #include <ArrowsIoEngine\window.h>
 #include <ArrowsIoEngine\ArrowsIoEngine.h>
+#include <ArrowsIoEngine\Camera2D.h>
 
 enum class GameState {PLAY, EXIT};
 
@@ -41,6 +42,7 @@ private:
 	std::vector<ArrowsIoEngine::sprite*> _sprites;
 
 	ArrowsIoEngine::GLSLProgram _colorProgram;
+	ArrowsIoEngine::Camera2D _camera;
 
 	float _time;
 	float _fps;
