@@ -16,3 +16,6 @@ Tutorial 22 Pt-1:
 
 Batch multiple sprites in one draw call (Instead of having a seperate vbo for each sprite).
 Made spriteBatch class to handle multiple sprites in one draw call.
+We are sorting glyphs based on their TEXTURE.
+
+We will store Glyphs with same texture in same batch. If we find any Glyph with new texture, then add it to render batch.
