@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sparky-core", "Sparky-core\Sparky-core.vcxproj", "{C8259F78-1FF1-40A7-A802-89394D8DF956}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B6C269DB-F351-4F37-8618-18CD8768FDD4} = {B6C269DB-F351-4F37-8618-18CD8768FDD4}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArrowsIoEngine", "ArrowsIoEngine\ArrowsIoEngine.vcxproj", "{B6C269DB-F351-4F37-8618-18CD8768FDD4}"
 EndProject

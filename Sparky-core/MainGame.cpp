@@ -1,5 +1,6 @@
 #include "MainGame.h"
 #include <ArrowsIoEngine\Errors.h>
+#include <ArrowsIoEngine/ResourceManager.h>
 
 MainGame::MainGame() : 
 	_time(0.0f),
@@ -20,12 +21,6 @@ void MainGame::run()
 {
 	initSystems();
 
-	_sprites.push_back(new ArrowsIoEngine::sprite());
-	_sprites.back()->init(0.0f, 0.0f, _screenWidth/2, _screenWidth/2, "Textures/PNG/CharacterRight_Standing.png");
-
-	_sprites.push_back(new ArrowsIoEngine::sprite());
-	_sprites.back()->init(_screenWidth / 2, 0.0f, _screenWidth / 2, _screenWidth / 2, "Textures/PNG/CharacterRight_Standing.png");
-
 
 	//_playerTexture = ImageLoader::loadPNG("Textures/PNG/CharacterRight_Standing.png");
 
@@ -39,6 +34,8 @@ void MainGame::initSystems()
 	_window.create("Game Engine", _screenWidth, _screenHeight, 0);
 
 	initShaders();
+
+	_spriteBatch.init();
 }
 
 void MainGame::initShaders() {
@@ -106,10 +103,10 @@ void MainGame::processInput()
 				_camera.setPosition(_camera.getPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
 				break;
 			case SDLK_a:
-				_camera.setPosition(_camera.getPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
+				_camera.setPosition(_camera.getPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
 				break;
 			case SDLK_d:
-				_camera.setPosition(_camera.getPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
+				_camera.setPosition(_camera.getPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
 				break;
 			case SDLK_q:
 				_camera.setScale(_camera.getScale() + SCALE_SPPED);
@@ -143,8 +140,22 @@ void MainGame::drawGame()
 
 	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
-	for (int i = 0; i < _sprites.size(); i++)
-		_sprites[i]->draw();
+	_spriteBatch.begin();
+
+	glm::vec4 pos(0.0f, 0.0f, 50.0f, 50.0f);
+	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
+	static ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture("Textures/PNG/CharacterRight_Standing.png");
+	ArrowsIoEngine::Color color;
+	color.r = 255;
+	color.g = 255;
+	color.b = 255;
+	color.a = 255;
+
+	_spriteBatch.draw(pos, uv, texture.id, 0.0f, color);
+
+	_spriteBatch.end();
+
+	_spriteBatch.renderBatch();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	_colorProgram.unuse();
@@ -184,6 +195,5 @@ void MainGame::calculateFPS()
 	}
 	else
 		_fps = 60.0f;
-
 
 }

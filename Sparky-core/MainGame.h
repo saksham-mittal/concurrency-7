@@ -12,6 +12,9 @@
 #include <vector>
 #include <ArrowsIoEngine/sprite.h>
 #include <ArrowsIoEngine\window.h>
+
+#include <ArrowsIoEngine\SpriteBatch.h>
+
 #include <ArrowsIoEngine\ArrowsIoEngine.h>
 #include <ArrowsIoEngine\Camera2D.h>
 
@@ -38,11 +41,10 @@ private:
 	int _screenHeight;
 	GameState _gameState;
 
-	
-	std::vector<ArrowsIoEngine::sprite*> _sprites;
-
 	ArrowsIoEngine::GLSLProgram _colorProgram;
 	ArrowsIoEngine::Camera2D _camera;
+
+	ArrowsIoEngine::SpriteBatch _spriteBatch;
 
 	float _time;
 	float _fps;
