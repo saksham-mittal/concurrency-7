@@ -18,6 +18,9 @@
 #include <ArrowsIoEngine\ArrowsIoEngine.h>
 #include <ArrowsIoEngine\Camera2D.h>
 
+#include <ArrowsIoEngine\InputManager.h>
+#include <ArrowsIoEngine\Timing.h>
+
 enum class GameState {PLAY, EXIT};
 
 class MainGame
@@ -35,7 +38,6 @@ private:
 	void processInput();
 	void gameLoop();
 	void drawGame();
-	void calculateFPS();
 	ArrowsIoEngine::window _window;
 	int _screenWidth;
 	int _screenHeight;
@@ -44,11 +46,13 @@ private:
 	ArrowsIoEngine::GLSLProgram _colorProgram;
 	ArrowsIoEngine::Camera2D _camera;
 
+	ArrowsIoEngine::InputManager _inputManager;
+	ArrowsIoEngine::FpsLimiter _fpsLimiter;
+
 	ArrowsIoEngine::SpriteBatch _spriteBatch;
 
-	float _time;
 	float _fps;
 	float _maxFPS;
-	float _frameTime;
+	float _time;
 };
 
