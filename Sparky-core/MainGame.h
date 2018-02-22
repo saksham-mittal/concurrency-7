@@ -21,6 +21,7 @@
 #include <ArrowsIoEngine\InputManager.h>
 #include <ArrowsIoEngine\Timing.h>
 
+#include "Bullet.h"
 enum class GameState {PLAY, EXIT};
 
 class MainGame
@@ -50,6 +51,8 @@ private:
 	ArrowsIoEngine::FpsLimiter _fpsLimiter;
 
 	ArrowsIoEngine::SpriteBatch _spriteBatch;
+
+	std::vector<Bullet> _bullets;
 
 	float _fps;
 	float _maxFPS;

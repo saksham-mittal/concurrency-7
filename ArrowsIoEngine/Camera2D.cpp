@@ -42,4 +42,18 @@ namespace ArrowsIoEngine {
 
 	}
 
+	glm::vec2 Camera2D::convertScreenToWorld(glm::vec2 screenCoords)
+	{
+		//Invert y coordinates
+		screenCoords.y = _screenHeight - screenCoords.y;
+		//Making 0 as the center 
+		screenCoords -= glm::vec2(_screenWidth / 2, _screenHeight / 2);
+		//scaling with camera position
+		screenCoords /= _scale;
+		//Translate the camera postion
+		screenCoords += _position;
+
+		return screenCoords;
+	}
+
 }

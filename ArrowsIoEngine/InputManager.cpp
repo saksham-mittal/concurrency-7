@@ -21,6 +21,12 @@ namespace ArrowsIoEngine {
 		_keyMap[keyID] = false;
 	}
 
+	void InputManager::setMouseCoords(float x, float y)
+	{
+		_mouseCoords.x = x;
+		_mouseCoords.y = y;
+	}
+
 	bool InputManager::isKeyPressed(unsigned int keyID)
 	{
 		auto it = _keyMap.find(keyID);
