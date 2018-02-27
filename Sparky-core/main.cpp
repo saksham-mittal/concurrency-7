@@ -1,4 +1,5 @@
 #include "MainGame.h"
+#include "MainGameServer.h"
 #include <ArrowsIoEngine/Errors.h>
 #include <iostream>
 #include "Sockets.h"
@@ -158,8 +159,10 @@ using namespace ArrowsIoEngine;
 			std::cout << input << std::endl;
 			// processString(input, name2, indexOfClient, noOfPlayers, players);
 			// SimpleGameServer simpleGame(noOfPlayers, indexOfClient, players, &server);
-			MainGame mainGame;
+			MainGameServer mainGame;
 			mainGame.run();
+			//MainGame mainGame;
+			//mainGame.run();
 			sockThread.join();
 		}
 		else if (choice == 2)
@@ -181,9 +184,9 @@ using namespace ArrowsIoEngine;
 			MainGame mainGame;
 			mainGame.run();
 		}
-		int x;
+		/*int x;
 		std::cout << "Enter any character to quit" << std::endl;
-		std::cin >> x;
+		std::cin >> x;*/
 		return 0;
 	}
 	/*MainGame mainGame;

@@ -1,23 +1,23 @@
-#include "MainGame.h"
+#include "MainGameServer.h"
 #include <ArrowsIoEngine\Errors.h>
 #include <ArrowsIoEngine/ResourceManager.h>
 
-MainGame::MainGame() : 
+MainGameServer::MainGameServer() :
 	_time(0.0f),
 	_screenWidth(1024),
 	_screenHeight(768),
-	_gameState(GameState::PLAY),
+	_gameState(GameStateServer::PLAY),
 	_maxFPS(120.0f)
 {
 	_camera.init(_screenWidth, _screenHeight);
 }
 
 
-MainGame::~MainGame()
+MainGameServer::~MainGameServer()
 {
 }
 
-void MainGame::run()
+void MainGameServer::run()
 {
 	initSystems();
 
@@ -27,11 +27,11 @@ void MainGame::run()
 	gameLoop();
 }
 
-void MainGame::initSystems()
+void MainGameServer::initSystems()
 {
 	ArrowsIoEngine::init();
 
-	_window.create("Client", _screenWidth, _screenHeight, 0);
+	_window.create("Server", _screenWidth, _screenHeight, 0);
 
 	initShaders();
 
@@ -40,7 +40,7 @@ void MainGame::initSystems()
 	_fpsLimiter.init(_maxFPS);
 }
 
-void MainGame::initShaders() {
+void MainGameServer::initShaders() {
 	_colorProgram.compileShaders("../Sparky-core/Shaders/colorShading.vert", "../Sparky-core/Shaders/colorShading.frag");
 	_colorProgram.addAttribute("vertexPosition");
 	_colorProgram.addAttribute("vertexColor");
@@ -48,9 +48,9 @@ void MainGame::initShaders() {
 	_colorProgram.linkShaders();
 }
 
-void MainGame::gameLoop()
+void MainGameServer::gameLoop()
 {
-	while (_gameState != GameState::EXIT)
+	while (_gameState != GameStateServer::EXIT)
 	{
 		//used for frame time measuring
 		_fpsLimiter.begin();
@@ -86,7 +86,7 @@ void MainGame::gameLoop()
 	}
 }
 
-void MainGame::processInput()
+void MainGameServer::processInput()
 {
 	SDL_Event evnt;
 
@@ -98,7 +98,7 @@ void MainGame::processInput()
 		switch (evnt.type)
 		{
 		case SDL_QUIT:
-			_gameState = GameState::EXIT;
+			_gameState = GameStateServer::EXIT;
 			break;
 
 		case SDL_MOUSEMOTION:
@@ -131,19 +131,19 @@ void MainGame::processInput()
 	if (_inputManager.isKeyPressed(SDLK_s)) {
 		_camera.setPosition(_camera.getPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
 	}
-	
+
 	if (_inputManager.isKeyPressed(SDLK_a)) {
 		_camera.setPosition(_camera.getPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
 	}
-	
+
 	if (_inputManager.isKeyPressed(SDLK_d)) {
 		_camera.setPosition(_camera.getPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
 	}
-	
+
 	if (_inputManager.isKeyPressed(SDLK_q)) {
 		_camera.setScale(_camera.getScale() + SCALE_SPPED);
 	}
-	
+
 	if (_inputManager.isKeyPressed(SDLK_e)) {
 		_camera.setScale(_camera.getScale() - SCALE_SPPED);
 	}
@@ -158,12 +158,12 @@ void MainGame::processInput()
 		//std::cout << mouseCoords.x << " , " << mouseCoords.y << std::endl;
 
 		_bullets.emplace_back(playerPosition, direction, 1.0f, 1000);
-	}	
-	
-	
+	}
+
+
 }
 
-void MainGame::drawGame()
+void MainGameServer::drawGame()
 {
 
 	glClearDepth(1.0);
