@@ -1,14 +1,12 @@
-/*#include "src\graphics\window.h"
-#include "src\maths\maths.h"
-#include "src\graphics\shader.h"
-
-#include "src\graphics\buffers\buffer.h"
-#include "src\graphics\buffers\indexbuffer.h"
-#include "src\graphics\buffers\vertexarray.h"
-#include <SDL/SDL.h>*/
 #include "MainGame.h"
+#include <ArrowsIoEngine/Errors.h>
+#include <iostream>
+#include "Sockets.h"
+#include <thread>
+#include <vector>
+#include <string>
 
-using namespace std;
+using namespace ArrowsIoEngine;
 
 /*int main() {
 	using namespace sparky;
@@ -112,10 +110,84 @@ using namespace std;
 	return 0;
 }*/
 
-int main(int argc, char** argv)
-{
-	MainGame mainGame;
+/*int main(int argc, char** argv)
+{*/
+
+	int main(int argc, char** argv)
+	{
+		int noOfPlayers = 0;
+		int indexOfClient = 0;
+		char name[100];
+		std::cout << "Enter your username\n";
+		std::cin >> name;
+		std::string name2;
+		name2 = std::string(name);
+
+		std::cout << "Enter your character choice 0-6\n";
+		char playerChoice[100];
+		std::cin >> playerChoice;
+		strcat_s(name, "|");
+		strcat_s(name, playerChoice);
+		strcat_s(name, "|");
+
+
+		int choice;
+		std::cout << "Enter 1 to be server,2 to be client\n";
+		std::cin >> choice;
+
+
+		std::string SOCK_PORT = "100";
+		std::thread sockThread;
+
+		WSADATA info;
+		if (WSAStartup(MAKEWORD(2, 0), &info))
+			fatalError("Could not start WSA");
+
+		if (choice == 1)
+		{
+			int clients;
+			std::cout << "Enter number of Clients" << std::endl;
+			std::cin >> clients;
+			socketServer server(SOCK_PORT, clients, Socket::ConnectionType::NonBlocking, 2048);
+			std::string tmp(name);
+			server.sendData(tmp);
+			sockThread = std::thread(&socketServer::select_activity, &server);
+			while (server.init);
+			std::string input = "";
+			server.receiveData(input);
+			std::cout << input << std::endl;
+			// processString(input, name2, indexOfClient, noOfPlayers, players);
+			// SimpleGameServer simpleGame(noOfPlayers, indexOfClient, players, &server);
+			MainGame mainGame;
+			mainGame.run();
+			sockThread.join();
+		}
+		else if (choice == 2)
+		{
+			std::cout << "Enter server's IP address\n";
+			std::string ip;
+			std::cin >> ip;
+			socketClient client(ip, SOCK_PORT, 2048);
+			char input[1000];
+			client.receiveBytes(input);
+			std::cout << input;	//connected msg
+
+			client.sendBytes(name);
+
+			client.receiveBytes(input);
+			std::cout << input << std::endl;
+			// processString(std::string(input), name2, indexOfClient, noOfPlayers, players);
+			// SimpleGame mainGame(noOfPlayers, indexOfClient, players, &client);
+			MainGame mainGame;
+			mainGame.run();
+		}
+		int x;
+		std::cout << "Enter any character to quit" << std::endl;
+		std::cin >> x;
+		return 0;
+	}
+	/*MainGame mainGame;
 	mainGame.run();
 	//system("pause");
 	return 0;
-}
+}*/
