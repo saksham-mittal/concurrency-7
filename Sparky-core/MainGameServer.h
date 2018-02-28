@@ -22,12 +22,14 @@
 #include <ArrowsIoEngine\Timing.h>
 
 #include "Bullet.h"
+#include "Sockets.h"
+#include <mutex>
 enum class GameStateServer { PLAY, EXIT };
 
 class MainGameServer
 {
 public:
-	MainGameServer();
+	MainGameServer(socketServer* server);
 	~MainGameServer();
 
 	void run();
@@ -37,6 +39,7 @@ private:
 	void initSystems();
 	void initShaders();
 	void processInput();
+	void receiver();
 	void gameLoop();
 	void drawGame();
 	ArrowsIoEngine::window _window;
@@ -57,5 +60,9 @@ private:
 	float _fps;
 	float _maxFPS;
 	float _time;
+
+	std::mutex mtx;
+	socketServer* socket;
+	std::string data;
 };
 

@@ -1,4 +1,5 @@
 #include "MainGame.h"
+#include "Player.h"
 #include "MainGameServer.h"
 #include <ArrowsIoEngine/Errors.h>
 #include <iostream>
@@ -118,11 +119,16 @@ using namespace ArrowsIoEngine;
 	{
 		int noOfPlayers = 0;
 		int indexOfClient = 0;
+		//std::vector<Player> players;
 		char name[100];
 		std::cout << "Enter your username\n";
 		std::cin >> name;
 		std::string name2;
 		name2 = std::string(name);
+		/*std::string om = "My name is om";
+		char temp[10];
+		strcpy(temp, om.c_str());*/
+
 
 		std::cout << "Enter your character choice 0-6\n";
 		char playerChoice[100];
@@ -151,15 +157,18 @@ using namespace ArrowsIoEngine;
 			std::cin >> clients;
 			socketServer server(SOCK_PORT, clients, Socket::ConnectionType::NonBlocking, 2048);
 			std::string tmp(name);
+			std::cout << "Temp:" << tmp << std::endl;
 			server.sendData(tmp);
 			sockThread = std::thread(&socketServer::select_activity, &server);
+			//std::cout << "Going to wait" << std::endl;
 			while (server.init);
+			//std::cout << "Resumed" << std::endl;
 			std::string input = "";
 			server.receiveData(input);
-			std::cout << input << std::endl;
+			std::cout << " Printing the input :::: " <<  input << std::endl;
 			// processString(input, name2, indexOfClient, noOfPlayers, players);
 			// SimpleGameServer simpleGame(noOfPlayers, indexOfClient, players, &server);
-			MainGameServer mainGame;
+			MainGameServer mainGame(&server);
 			mainGame.run();
 			//MainGame mainGame;
 			//mainGame.run();
@@ -174,9 +183,9 @@ using namespace ArrowsIoEngine;
 			char input[1000];
 			client.receiveBytes(input);
 			std::cout << input;	//connected msg
-
+			//std::cout << name << std::endl;
 			client.sendBytes(name);
-
+			//client.sendBytes(name);
 			client.receiveBytes(input);
 			std::cout << input << std::endl;
 			// processString(std::string(input), name2, indexOfClient, noOfPlayers, players);

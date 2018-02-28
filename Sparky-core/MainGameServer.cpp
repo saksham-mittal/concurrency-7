@@ -2,19 +2,37 @@
 #include <ArrowsIoEngine\Errors.h>
 #include <ArrowsIoEngine/ResourceManager.h>
 
-MainGameServer::MainGameServer() :
+MainGameServer::MainGameServer(socketServer* server) :
 	_time(0.0f),
 	_screenWidth(1024),
 	_screenHeight(768),
 	_gameState(GameStateServer::PLAY),
-	_maxFPS(120.0f)
+	_maxFPS(120.0f),
+	socket(server)
 {
 	_camera.init(_screenWidth, _screenHeight);
+
 }
 
 
 MainGameServer::~MainGameServer()
 {
+}
+
+void MainGameServer::receiver()
+{
+	//while (m_gameState != GameStateServer::EXIT)
+	//{
+	std::string in;
+	socket->receiveData(in);
+	std::cout <<"in"<< in<<std::endl;
+	while (in[0] == 'i')				//the server reads from local data and hence is not a blocking call. We introduce while loop to prevent game running with initial data indicated by 'i'
+		socket->receiveData(in);
+	mtx.lock();
+	data = std::string(in);
+	std::cout << data << std::endl;
+	mtx.unlock();
+	//}
 }
 
 void MainGameServer::run()
@@ -54,6 +72,8 @@ void MainGameServer::gameLoop()
 	{
 		//used for frame time measuring
 		_fpsLimiter.begin();
+		receiver();
+
 		processInput();
 		_time += 0.01;
 
