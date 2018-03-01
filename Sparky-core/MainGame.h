@@ -44,6 +44,10 @@ private:
 	void receiver();
 	void gameLoop();
 	void drawGame();
+	
+	void upDownControl();
+	void rightLeftControl();
+
 	ArrowsIoEngine::window _window;
 	int _screenWidth;
 	int _screenHeight;

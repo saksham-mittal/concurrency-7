@@ -50,7 +50,7 @@ void MainGameServer::run()
 	gameLoop();
 }
 
-/*void MainGameServer::upDownControl()
+void MainGameServer::upDownControl()
 {
 	if (_inputManager.isKeyPressed(SDLK_UP))
 		m_mainPlayer->moveUP();
@@ -66,8 +66,7 @@ void MainGameServer::rightLeftControl()
 
 	if (_inputManager.isKeyPressed(SDLK_RIGHT))
 		m_mainPlayer->moveRIGHT();
-}*/
-
+}
 
 void MainGameServer::initSystems()
 {
@@ -148,7 +147,7 @@ void MainGameServer::processInput()
 	SDL_Event evnt;
 
 	const float CAMERA_SPEED = 2.0f;
-	const float SCALE_SPPED = 0.1f;
+	const float SCALE_SPEED = 0.1f;
 
 	while (SDL_PollEvent(&evnt))
 	{
@@ -180,31 +179,6 @@ void MainGameServer::processInput()
 		}
 	}
 
-
-	if (_inputManager.isKeyPressed(SDLK_w)) {
-		_camera.setPosition(_camera.getPosition() + glm::vec2(0.0f, CAMERA_SPEED));
-	}
-
-	if (_inputManager.isKeyPressed(SDLK_s)) {
-		_camera.setPosition(_camera.getPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
-	}
-
-	if (_inputManager.isKeyPressed(SDLK_a)) {
-		_camera.setPosition(_camera.getPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
-	}
-
-	if (_inputManager.isKeyPressed(SDLK_d)) {
-		_camera.setPosition(_camera.getPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
-	}
-
-	if (_inputManager.isKeyPressed(SDLK_q)) {
-		_camera.setScale(_camera.getScale() + SCALE_SPPED);
-	}
-
-	if (_inputManager.isKeyPressed(SDLK_e)) {
-		_camera.setScale(_camera.getScale() - SCALE_SPPED);
-	}
-
 	if (_inputManager.isKeyPressed(SDL_BUTTON_LEFT)) {
 		glm::vec2 mouseCoords = _inputManager.getMouseCoords();
 		mouseCoords = _camera.convertScreenToWorld(mouseCoords);
@@ -217,12 +191,27 @@ void MainGameServer::processInput()
 		_bullets.emplace_back(playerPosition, direction, 1.0f, 1000);
 	}
 
+	if (_inputManager.isKeyPressed(SDLK_s))
+		m_mainPlayer->moveUP();
+
+	if (_inputManager.isKeyPressed(SDLK_w))
+		m_mainPlayer->moveDOWN();
+
+	if (_inputManager.isKeyPressed(SDLK_d))
+		m_mainPlayer->moveLEFT();
+
+	if (_inputManager.isKeyPressed(SDLK_a))
+		m_mainPlayer->moveRIGHT();
+
+	if (_inputManager.isKeyPressed(SDLK_q))
+		_camera.setScale(_camera.getScale() + SCALE_SPEED);
+	if (_inputManager.isKeyPressed(SDLK_e))
+		_camera.setScale(_camera.getScale() - SCALE_SPEED);
 
 }
 
 void MainGameServer::drawGame()
 {
-
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
