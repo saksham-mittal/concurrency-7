@@ -45,8 +45,8 @@ private:
 	void gameLoop();
 	void drawGame();
 	// void initialiseLevel(int currentLevel);
-	void upDownControl();
-	void rightLeftControl();
+	// void updateBullets();
+	void updateChars();
 	ArrowsIoEngine::window _window;
 	int _screenWidth;
 	int _screenHeight;

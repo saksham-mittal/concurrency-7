@@ -1,5 +1,5 @@
 #include "Character.h"
-
+#include <iostream>
 
 Character::Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim, int speed/*, const std::vector<std::string>& levelData*/)
 {
@@ -19,7 +19,7 @@ Character::~Character()
 {
 }
 
-void Character::setData(float x, float y, float health, int score)
+void Character::setData(float x, float y/*, float health, int score*/)
 {
 	m_position.x = x;
 	m_position.y = y;
@@ -30,7 +30,7 @@ void Character::setData(float x, float y, float health, int score)
 
 std::string Character::getData()
 {
-	std::string result = std::to_string(m_position.x) + " " + std::to_string(m_position.y) /*+ "|" + std::to_string(m_health) + "|" + std::to_string(m_score) + "|"*/;
+	std::string result = std::to_string(m_position.x) + " " + std::to_string(m_position.y) + "|" + std::to_string(m_health) + "|" + std::to_string(m_score) + "|";
 	return result;
 }
 
@@ -64,7 +64,7 @@ void Character::moveLEFT()
 	/*int distance = ((int)(m_position.x)) % TILE_WIDTH;
 	if (distance < MIN_WALL_DISTANCE)
 		return; //without updating the position, as the player cannot move any closer than the min distance */
-	m_position += glm::vec2(-m_speed, 0);
+	m_position += glm::vec2(-m_speed, 0.0f);
 	return;
 }
 
@@ -73,6 +73,6 @@ void Character::moveRIGHT()
 	/*int distance = ((int)(m_position.x + m_dim.x)) % TILE_WIDTH;
 	if ((TILE_WIDTH - distance) < MIN_WALL_DISTANCE)
 		return;	//without updating the position, as the player cannot move any closer than the min distance*/
-	m_position += glm::vec2(m_speed, 0);
+	m_position += glm::vec2(m_speed, 0.0f);
 	return;
 }

@@ -52,8 +52,9 @@ public:
 	std::string getData();
 	std::string getNameScore() { return m_name + "\t\t\t" + std::to_string(m_score); }
 	//setters
-	void setData(float x, float y, float health, int score);
+	void setData(float x, float y/*, float health, int score*/);
 	//void increaseScore();
+
 private:
 	//void respawn();
 	glm::vec2 m_position, m_dim;
