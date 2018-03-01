@@ -190,7 +190,7 @@ using namespace ArrowsIoEngine;
 			std::cout << input << std::endl;
 			// processString(std::string(input), name2, indexOfClient, noOfPlayers, players);
 			// SimpleGame mainGame(noOfPlayers, indexOfClient, players, &client);
-			MainGame mainGame;
+			MainGame mainGame(&client);
 			mainGame.run();
 		}
 		/*int x;

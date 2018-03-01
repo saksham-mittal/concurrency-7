@@ -41,6 +41,8 @@ void MainGameServer::run()
 
 
 	//_playerTexture = ImageLoader::loadPNG("Textures/PNG/CharacterRight_Standing.png");
+	std::string strData = "1.0f 0.5f|100.0f|20|0|";
+	socket->sendData(strData);
 
 	gameLoop();
 }
@@ -92,6 +94,9 @@ void MainGameServer::gameLoop()
 		}
 
 		drawGame();
+
+		std::string strData = "1.0f 0.5f|100.0f|20|2|1";
+		socket->sendData(strData);
 
 		_fps = _fpsLimiter.end();
 

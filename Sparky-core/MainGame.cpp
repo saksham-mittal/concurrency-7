@@ -2,12 +2,13 @@
 #include <ArrowsIoEngine\Errors.h>
 #include <ArrowsIoEngine/ResourceManager.h>
 
-MainGame::MainGame() : 
+MainGame::MainGame(socketClient* client) : 
 	_time(0.0f),
 	_screenWidth(1024),
 	_screenHeight(768),
 	_gameState(GameState::PLAY),
-	_maxFPS(120.0f)
+	_maxFPS(120.0f),
+	socket(client)
 {
 	_camera.init(_screenWidth, _screenHeight);
 }
@@ -17,12 +18,31 @@ MainGame::~MainGame()
 {
 }
 
+void MainGame::receiver()
+{
+	//while (m_gameState != GameState::EXIT)
+	//{
+	char in[1000];
+	socket->receiveBytes(in);
+	//std::cout <<"in"<< in<<std::endl;
+	mtx.lock();
+	data = std::string(in);
+	mtx.unlock();
+	//}
+}
+
+
 void MainGame::run()
 {
 	initSystems();
 
 
 	//_playerTexture = ImageLoader::loadPNG("Textures/PNG/CharacterRight_Standing.png");
+	std::string strData = "1.0f 0.5f|100.0f|20|0|";
+	char data[100];
+	strcpy(data, strData.c_str());
+	socket->sendBytes(data);
+
 
 	gameLoop();
 }
@@ -72,6 +92,11 @@ void MainGame::gameLoop()
 		}
 
 		drawGame();
+
+		std::string strData = "1.0f 0.5f|100.0f|20|0|";
+		char data[100];
+		strcpy(data, strData.c_str());
+		socket->sendBytes(data);
 
 		_fps = _fpsLimiter.end();
 

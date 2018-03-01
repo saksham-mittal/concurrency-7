@@ -226,6 +226,7 @@ void socketServer::select_activity()
 	addrlen = sizeof(struct sockaddr_in);
 	while (connected_clients > 0)
 	{
+		std::cout << "connected_clients :" << connected_clients << std::endl;
 		//clear the socket fd set
 		FD_ZERO(&readfds);
 
