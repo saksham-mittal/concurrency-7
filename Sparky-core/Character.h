@@ -29,7 +29,7 @@ using namespace ArrowsIoEngine;
 class Character
 {
 public:
-	Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim, int speed, const std::vector<std::string>& levelData);
+	Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim, int speed/*, const std::vector<std::string>& levelData*/);
 	~Character();
 	//void init();
 	void draw(SpriteBatch& spriteBatch);
@@ -38,12 +38,12 @@ public:
 	void nextGun();
 	void selectGun(unsigned int n);
 	bool shoot(const glm::vec2& direction, std::vector<Bullet>& bullets);
-	void stopShoot();
+	void stopShoot();*/
 	void moveUP();
 	void moveDOWN();
 	void moveRIGHT();
 	void moveLEFT();
-	bool damageTaken(int damage);*/
+	/*bool damageTaken(int damage);*/
 	//getters
 	glm::vec2 getPosition() { return (m_position + glm::vec2(m_dim.x / 2, m_dim.y / 2)); }	//dimension added to get position of the centre of the character
 	float getHealth() { return m_health; }

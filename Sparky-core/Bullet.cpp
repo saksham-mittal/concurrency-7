@@ -20,13 +20,13 @@ void Bullet::draw(ArrowsIoEngine::SpriteBatch& spriteBatch)
 {
 	ArrowsIoEngine::Color color;
 	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
-	static ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture("../Sparky-core/Textures/PNG/CharacterRight_Standing.png");
+	static ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture("../Sparky-core/Textures/PNG/Bullet.png");
 	color.r = 255;
 	color.g = 255;
 	color.b = 255;
 	color.a = 255;
 
-	glm::vec4 posAndSize = glm::vec4(_postion.x, _postion.y, 30, 30);
+	glm::vec4 posAndSize = glm::vec4(_postion.x, _postion.y, 7, 7);
 	spriteBatch.draw(posAndSize, uv, texture.id, 0.0f, color);
 }
 

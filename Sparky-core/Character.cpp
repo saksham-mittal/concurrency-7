@@ -1,7 +1,7 @@
 #include "Character.h"
 
 
-Character::Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim, int speed, const std::vector<std::string>& levelData)
+Character::Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim, int speed/*, const std::vector<std::string>& levelData*/)
 {
 	//m_health = 200.0f;
 	m_name = name;
@@ -35,7 +35,6 @@ std::string Character::getData()
 }
 
 void Character::draw(SpriteBatch& spriteBatch)
-
 {
 	static GLTexture texture = ResourceManager::getTexture("../Sparky-core/Textures/PNG/CharacterRight_Standing.png");
 	spriteBatch.draw(glm::vec4(m_position.x, m_position.y, m_dim.x, m_dim.y), m_uv, texture.id, 0.0f, m_color);

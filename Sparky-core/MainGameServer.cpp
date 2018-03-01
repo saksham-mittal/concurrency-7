@@ -2,7 +2,7 @@
 #include <ArrowsIoEngine\Errors.h>
 #include <ArrowsIoEngine/ResourceManager.h>
 
-MainGameServer::MainGameServer(socketServer* server) :
+MainGameServer::MainGameServer(int noOfPlayers, int currentIndex, const std::vector<Player>& players, socketServer* server) :
 	_time(0.0f),
 	_screenWidth(1024),
 	_screenHeight(768),
@@ -11,9 +11,12 @@ MainGameServer::MainGameServer(socketServer* server) :
 	socket(server)
 {
 	_camera.init(_screenWidth, _screenHeight);
-
+	m_playerDim = glm::vec2(30.0f, 30.0f);
+	m_bulletDim = glm::vec2(10.0f, 10.0f);
+	m_noOfPlayers = noOfPlayers;
+	m_currentIndex = currentIndex;
+	m_players = players;
 }
-
 
 MainGameServer::~MainGameServer()
 {
@@ -41,11 +44,30 @@ void MainGameServer::run()
 
 
 	//_playerTexture = ImageLoader::loadPNG("Textures/PNG/CharacterRight_Standing.png");
-	std::string strData = "1.0f 0.5f|100.0f|20|0|";
+	std::string strData = m_mainPlayer->getData() + "0|";
 	socket->sendData(strData);
 
 	gameLoop();
 }
+
+/*void MainGameServer::upDownControl()
+{
+	if (_inputManager.isKeyPressed(SDLK_UP))
+		m_mainPlayer->moveUP();
+
+	if (_inputManager.isKeyPressed(SDLK_DOWN))
+		m_mainPlayer->moveDOWN();
+}
+
+void MainGameServer::rightLeftControl()
+{
+	if (_inputManager.isKeyPressed(SDLK_LEFT))
+		m_mainPlayer->moveLEFT();
+
+	if (_inputManager.isKeyPressed(SDLK_RIGHT))
+		m_mainPlayer->moveRIGHT();
+}*/
+
 
 void MainGameServer::initSystems()
 {
@@ -58,6 +80,15 @@ void MainGameServer::initSystems()
 	_spriteBatch.init();
 
 	_fpsLimiter.init(_maxFPS);
+
+	//m_leveldata = m_levels[m_currentLevel]->getLevelData();
+	for (int i = 0; i < m_noOfPlayers; i++)
+	{
+		m_chars.emplace_back(m_players[i].name, m_players[i].position, m_players[i].playerIndex, m_playerDim, 1/*, m_leveldata*/);
+	}
+
+
+	m_mainPlayer = &(m_chars[m_currentIndex]);
 }
 
 void MainGameServer::initShaders() {
@@ -79,6 +110,7 @@ void MainGameServer::gameLoop()
 		processInput();
 		_time += 0.01;
 
+		_camera.setPosition(m_mainPlayer->getPosition());
 		_camera.update();
 
 		for (int i = 0; i < _bullets.size();)
@@ -95,7 +127,7 @@ void MainGameServer::gameLoop()
 
 		drawGame();
 
-		std::string strData = "1.0f 0.5f|100.0f|20|2|1";
+		std::string strData = m_mainPlayer->getData() + "2|1";
 		socket->sendData(strData);
 
 		_fps = _fpsLimiter.end();
@@ -207,17 +239,12 @@ void MainGameServer::drawGame()
 	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
 	_spriteBatch.begin();
-
-	glm::vec4 pos(0.0f, 0.0f, 50.0f, 50.0f);
-	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
-	static ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture("../Sparky-core/Textures/PNG/CharacterRight_Standing.png");
-	ArrowsIoEngine::Color color;
-	color.r = 255;
-	color.g = 255;
-	color.b = 255;
-	color.a = 255;
-
-	_spriteBatch.draw(pos, uv, texture.id, 0.0f, color);
+	
+	// Drawing characters of clients
+	for (int i = 0; i < m_noOfPlayers; i++)
+	{
+		m_chars[i].draw(_spriteBatch);
+	}
 
 	for (int i = 0; i < _bullets.size(); i++)
 	{
