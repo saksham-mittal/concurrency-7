@@ -55,19 +55,19 @@ void MainGame::run()
 
 void MainGame::upDownControl()
 {
-	if (_inputManager.isKeyPressed(SDLK_UP))
+	if (_inputManager.isKeyDown(SDLK_UP))
 		m_mainPlayer->moveUP();
 
-	if (_inputManager.isKeyPressed(SDLK_DOWN))
+	if (_inputManager.isKeyDown(SDLK_DOWN))
 		m_mainPlayer->moveDOWN();
 }
 
 void MainGame::rightLeftControl()
 {
-	if (_inputManager.isKeyPressed(SDLK_LEFT))
+	if (_inputManager.isKeyDown(SDLK_LEFT))
 		m_mainPlayer->moveLEFT();
 
-	if (_inputManager.isKeyPressed(SDLK_RIGHT))
+	if (_inputManager.isKeyDown(SDLK_RIGHT))
 		m_mainPlayer->moveRIGHT();
 }
 
@@ -107,6 +107,8 @@ void MainGame::gameLoop()
 	{
 		//used for frame time measuring
 		_fpsLimiter.begin();
+
+		_inputManager.update();
 		processInput();
 		_time += 0.01;
 
@@ -194,21 +196,21 @@ void MainGame::processInput()
 		_bullets.emplace_back(playerPosition, direction, 1.0f, 1000);
 	}	
 	
-	if (_inputManager.isKeyPressed(SDLK_s))
+	if (_inputManager.isKeyDown(SDLK_s))
 		m_mainPlayer->moveUP();
 
-	if (_inputManager.isKeyPressed(SDLK_w))
+	if (_inputManager.isKeyDown(SDLK_w))
 		m_mainPlayer->moveDOWN();
 
-	if (_inputManager.isKeyPressed(SDLK_d))
+	if (_inputManager.isKeyDown(SDLK_d))
 		m_mainPlayer->moveLEFT();
 
-	if (_inputManager.isKeyPressed(SDLK_a))
+	if (_inputManager.isKeyDown(SDLK_a))
 		m_mainPlayer->moveRIGHT();
 
-	if (_inputManager.isKeyPressed(SDLK_q))
+	if (_inputManager.isKeyDown(SDLK_q))
 		_camera.setScale(_camera.getScale() + SCALE_SPEED);
-	if (_inputManager.isKeyPressed(SDLK_e))
+	if (_inputManager.isKeyDown(SDLK_e))
 		_camera.setScale(_camera.getScale() - SCALE_SPEED);
 
 }
