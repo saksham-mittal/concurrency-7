@@ -375,11 +375,9 @@ void MainGameServer::processInput()
 		direction = glm::normalize(direction);
 		//std::cout << mouseCoords.x << " , " << mouseCoords.y << std::endl;
 		static ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture("../Sparky-core/Textures/PNG/Bullet.png");
-		_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id,1.0f, 1000,1,1);
+		_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id,1.0f, 1000,2,1);
 		newBulls += _bullets[_bullets.size() - 1].getData();
 		newBullCount++;
-
-
 	}
 
 	if (_inputManager.isKeyDown(SDLK_w))
