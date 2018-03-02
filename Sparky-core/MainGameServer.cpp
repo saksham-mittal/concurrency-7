@@ -131,7 +131,7 @@ void MainGameServer::gameLoop()
 
 		drawGame();
 
-		std::string strData = m_mainPlayer->getData() + "0|1";
+		std::string strData = m_mainPlayer->getData() + "0|";
 		//std::cout << "Data sent by server : " << strData << std::endl;
 		socket->sendData(strData);
 
@@ -307,6 +307,7 @@ void MainGameServer::processInput()
 
 		case SDL_MOUSEMOTION:
 			_inputManager.setMouseCoords(evnt.motion.x, evnt.motion.y);
+			//std::cout << evnt.motion.x << "," << evnt.motion.y << std::endl;
 			break;
 		case SDL_KEYDOWN:
 			_inputManager.pressKey(evnt.key.keysym.sym);

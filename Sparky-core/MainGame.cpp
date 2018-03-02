@@ -134,7 +134,7 @@ void MainGame::gameLoop()
 
 		drawGame();
 
-		std::string strData = m_mainPlayer->getData() + "0|0";
+		std::string strData = m_mainPlayer->getData() + "0|";
 		char d[100];
 		strcpy(d, strData.c_str());
 		socket->sendBytes(d);
