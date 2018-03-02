@@ -46,7 +46,7 @@ private:
 	void drawGame();
 
 	void updateChars();
-	
+	void updateBullets();
 	//void upDownControl();
 	//void rightLeftControl();
 
@@ -74,6 +74,8 @@ private:
 	Character* m_mainPlayer;
 
 	int m_noOfPlayers, m_currentIndex;
+	std::string newBulls = "";
+	int newBullCount = 0;
 	std::vector<Player> m_players;
 
 	std::mutex mtx;

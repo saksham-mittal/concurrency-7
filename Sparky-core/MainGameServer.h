@@ -44,6 +44,7 @@ private:
 	void receiver();
 	void gameLoop();
 	void drawGame();
+	void updateBullets();
 	// void initialiseLevel(int currentLevel);
 	// void updateBullets();
 	void updateChars();
@@ -74,6 +75,8 @@ private:
 	std::vector<Character> m_chars;
 	Character* m_mainPlayer;
 
+	std::string newBulls = "";
+	int newBullCount = 0;
 	int m_noOfPlayers, m_currentIndex;
 	std::vector<Player> m_players;
 	std::mutex mtx;

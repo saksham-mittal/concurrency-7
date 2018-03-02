@@ -44,11 +44,13 @@ void MainGame::run()
 
 
 	//_playerTexture = ImageLoader::loadPNG("Textures/PNG/CharacterRight_Standing.png");
-	std::string strData = m_mainPlayer->getData() + "0|";
-	char d[100];
-	strcpy(d, strData.c_str());
-	std::cout << d << std::endl;
+	char d[1000];
+	strcpy_s(d, m_mainPlayer->getData().c_str());
+	newBulls = "0|" + newBulls;
+	strcat_s(d, newBulls.c_str());
 	socket->sendBytes(d);
+	newBulls = "";
+	newBullCount = 0;
 
 
 	gameLoop();
@@ -119,8 +121,9 @@ void MainGame::gameLoop()
 		_camera.update();
 
 		updateChars();
+		updateBullets();
 
-		for (int i = 0; i < _bullets.size();)
+		/*for (int i = 0; i < _bullets.size();)
 		{
 			if (_bullets[i].update() == true) {
 				_bullets[i] = _bullets.back();
@@ -130,14 +133,19 @@ void MainGame::gameLoop()
 			{
 				i++;
 			}
-		}
+		}*/
 
 		drawGame();
 
-		std::string strData = m_mainPlayer->getData() + "0|";
-		char d[100];
-		strcpy(d, strData.c_str());
+		char d[1000];
+		strcpy_s(d, m_mainPlayer->getData().c_str());
+		newBulls = std::to_string(newBullCount) + "|" + newBulls;
+		strcat_s(d, newBulls.c_str());
+		//std::cout << d << std::endl;
 		socket->sendBytes(d);
+		//std::cout << newBulls << std::endl;
+		newBulls = "";
+		newBullCount = 0;
 
 		_fps = _fpsLimiter.end();
 
@@ -197,7 +205,12 @@ void MainGame::processInput()
 		direction = glm::normalize(direction);
 		//std::cout << mouseCoords.x << " , " << mouseCoords.y << std::endl;
 
-		_bullets.emplace_back(m_mainPlayer->getPosition(), direction, 10.0f, 1000);
+		static ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture("../Sparky-core/Textures/PNG/Bullet.png");
+		_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id, 1.0f, 1000, 1, 1);
+		newBulls += _bullets[_bullets.size() - 1].getData();
+		newBullCount++;
+
+		//_bullets.emplace_back(m_mainPlayer->getPosition(), direction, 10.0f, 1000);
 	}	
 	
 	if (_inputManager.isKeyDown(SDLK_w))
@@ -392,12 +405,49 @@ void MainGame::updateChars()
 			i++;
 			temp = "";
 
-			//if (pID != m_currentIndex)
-			//m_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), m_bulletTexID[bType], pID, bType);
+			static ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture("../Sparky-core/Textures/PNG/Bullet.png");
+			if (pID != m_currentIndex)
+				_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 1.0f, 1000, pID, bType);
 		}
 		if (j != m_currentIndex)
 			m_chars[j].setData(x, y/*, health, score*/);
 	}
 	//m_mainPlayer->update();
+}
+
+void MainGame::updateBullets()
+{
+	for (int j = 0; j < m_noOfPlayers; j++)
+	{
+		for (unsigned int i = 0; i < _bullets.size(); )
+		{
+			glm::vec2 bulPos = _bullets[i].getPosition();
+			glm::vec2 playerPos = m_chars[j].getPosition();
+			if (_bullets[i].getPlayerID() == j)
+			{
+				i++;
+				continue;
+			}
+			if (abs(bulPos.x - playerPos.x) < (m_playerDim.x / 2 + m_bulletDim.x / 2) &&
+				abs(bulPos.y - playerPos.y) < (m_playerDim.y / 2 + m_bulletDim.y / 2))
+			{
+				/*if (m_chars[j].damageTaken(m_bullets[i].getDamage()))
+				{
+				if (m_bullets[i].getPlayerID() == m_currentIndex)
+				m_mainPlayer->increaseScore();
+				}*/
+				_bullets[i] = _bullets.back();
+				_bullets.pop_back();
+				continue;
+			}
+			if (_bullets[i].update(/*m_leveldata*/))
+			{
+				_bullets[i] = _bullets.back();
+				_bullets.pop_back();
+			}
+			else
+				i++;
+		}
+	}
 }
 
