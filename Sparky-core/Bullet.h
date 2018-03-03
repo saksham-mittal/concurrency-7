@@ -16,6 +16,7 @@ public:
 	glm::vec2 getPosition() { return _postion + glm::vec2(_dim.x / 2, _dim.y / 2); }	//the dimension have been added to get the position of the centre of the bullet
 	glm::vec2 getDim() { return _dim; }
 	int getPlayerID() { return _playerID; }
+	int getDamage() { return _damage; }
 	std::string getData() { return std::to_string(_playerID) + "|" + std::to_string(_bulletType) + "|" + std::to_string(_postion.x) + " " + std::to_string(_postion.y) + "|" + std::to_string(_direction.x) + " " + std::to_string(_direction.y) + "|"; }
 
 private:
@@ -26,6 +27,7 @@ private:
 	glm::vec2 _dim;
 	int _playerID;
 	int _bulletType;
+	int _damage = 1;
 	GLuint _textureID;
 };
 

@@ -82,5 +82,12 @@ private:
 	std::mutex mtx;
 	socketServer* socket;
 	std::string data;
+
+	glm::vec2 _heartPos;
+	glm::vec2 _heartDim = glm::vec2(20.0f, 10.0f);
+	GLuint _heartTexID, _redTexID, _grayTexID, _blueTexID, _wandTexID;
+
+	glm::vec4 _uv = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+	Color _color = { 255,255,255,255 };
 };
 

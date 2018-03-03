@@ -132,7 +132,7 @@ void processString(std::string & input, std::string & name2, int & indexOfClient
 		strcpy(temp, om.c_str());*/
 
 
-		std::cout << "Enter your character choice 0-6\n";
+		std::cout << "Enter your character choice 0-4\n";
 		char playerChoice[100];
 		std::cin >> playerChoice;
 		strcat_s(name, "|");

@@ -92,6 +92,11 @@ void MainGame::initSystems()
 		m_chars.emplace_back(m_players[i].name, m_players[i].position, m_players[i].playerIndex, m_playerDim, 1/*, m_leveldata*/);
 	}
 
+	_heartTexID = ResourceManager::getTexture("../Sparky-core/Textures/Health.png").id;
+	_wandTexID = ResourceManager::getTexture("../Sparky-core/Textures/wand.png").id;
+	_redTexID = ResourceManager::getTexture("../Sparky-core/Textures/red.png").id;
+	_blueTexID = ResourceManager::getTexture("../Sparky-core/Textures/blue.png").id;
+	_grayTexID = ResourceManager::getTexture("../Sparky-core/Textures/gray.png").id;
 
 	m_mainPlayer = &(m_chars[m_currentIndex]);
 }
@@ -206,7 +211,7 @@ void MainGame::processInput()
 		//std::cout << mouseCoords.x << " , " << mouseCoords.y << std::endl;
 
 		static ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture("../Sparky-core/Textures/PNG/Bullet.png");
-		_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id, 1.0f, 1000, 1, 1);
+		_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id, 1.0f, 1000, m_currentIndex, 1);
 		newBulls += _bullets[_bullets.size() - 1].getData();
 		newBullCount++;
 
@@ -262,6 +267,20 @@ void MainGame::drawGame()
 	{
 		_bullets[i].draw(_spriteBatch);
 	}
+
+	int health = m_mainPlayer->getHealth();
+	float mana = 100.0f;
+	_heartPos = _camera.convertScreenToWorld(glm::vec2(40.0f, 40.0f));
+	for (int i = 0; i < health; i++)
+	{
+		_spriteBatch.draw(glm::vec4(_heartPos.x + i *( _heartDim.x + 1.5f), _heartPos.y, _heartDim.x, _heartDim.y), _uv, _heartTexID, 5, _color);
+	}
+	/*_spriteBatch.draw(glm::vec4(_heartPos.x, _heartPos.y, _heartDim.x, _heartDim.y), _uv, _heartTexID, 5, _color);
+	_spriteBatch.draw(glm::vec4(_heartPos.x + 1.5*_heartDim.x, _heartPos.y, health / 4, _heartDim.y), _uv, _redTexID, 5, _color);
+	_spriteBatch.draw(glm::vec4(_heartPos.x + 1.5*_heartDim.x + health / 4, _heartPos.y, 50.0f - health / 4, _heartDim.y), _uv, _grayTexID, 5, _color);
+	_spriteBatch.draw(glm::vec4(_heartPos.x, _heartPos.y - 2 * _heartDim.y, _heartDim.x, _heartDim.y), _uv, _wandTexID, 5, _color);
+	_spriteBatch.draw(glm::vec4(_heartPos.x + 1.5*_heartDim.x, _heartPos.y - 2 * _heartDim.y, mana / 2, _heartDim.y), _uv, _blueTexID, 5, _color);
+	_spriteBatch.draw(glm::vec4(_heartPos.x + 1.5*_heartDim.x + mana / 2, _heartPos.y - 2 * _heartDim.y, 50.0f - mana / 2, _heartDim.y), _uv, _grayTexID, 5, _color);*/
 
 	_spriteBatch.end();
 
@@ -431,11 +450,11 @@ void MainGame::updateBullets()
 			if (abs(bulPos.x - playerPos.x) < (m_playerDim.x / 2 + m_bulletDim.x / 2) &&
 				abs(bulPos.y - playerPos.y) < (m_playerDim.y / 2 + m_bulletDim.y / 2))
 			{
-				/*if (m_chars[j].damageTaken(m_bullets[i].getDamage()))
+				if (m_chars[j].damageTaken(_bullets[i].getDamage()))
 				{
-				if (m_bullets[i].getPlayerID() == m_currentIndex)
-				m_mainPlayer->increaseScore();
-				}*/
+				/*if (m_bullets[i].getPlayerID() == m_currentIndex)
+				m_mainPlayer->increaseScore();*/
+				}
 				_bullets[i] = _bullets.back();
 				_bullets.pop_back();
 				continue;
