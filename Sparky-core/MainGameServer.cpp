@@ -1,6 +1,7 @@
 #include "MainGameServer.h"
 #include <ArrowsIoEngine\Errors.h>
 #include <ArrowsIoEngine/ResourceManager.h>
+#define PI 3.14159265
 
 MainGameServer::MainGameServer(int noOfPlayers, int currentIndex, const std::vector<Player>& players, socketServer* server) :
 	_time(0.0f),
@@ -11,7 +12,7 @@ MainGameServer::MainGameServer(int noOfPlayers, int currentIndex, const std::vec
 	socket(server)
 {
 	_camera.init(_screenWidth, _screenHeight);
-	m_playerDim = glm::vec2(40.0f, 40.0f);
+	m_playerDim = glm::vec2(40.0f, 60.0f);
 	m_bulletDim = glm::vec2(15.0f, 15.0f);
 	m_noOfPlayers = noOfPlayers;
 	m_currentIndex = currentIndex;
@@ -291,7 +292,24 @@ void MainGameServer::updateChars()
 
 			i++;
 			temp = "";
-			static ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture("../Sparky-core/Textures/PNG/Bullet.png");
+
+			std::string stringPath = "../Sparky-core/Textures/Arrows/";
+			int no;
+			if (xD >= 0 && yD >= 0) {
+				no = 90 - (int)(atan(yD / xD) * 180 / PI);
+			}
+			if (xD <= 0 && yD >= 0) {
+				no = (270 - (int)(atan(yD / xD) * 180 / PI)) % 360;
+			}
+			if (xD >= 0 && yD <= 0) {
+				no = 90 - (int)(atan(yD / xD) * 180 / PI);
+			}
+			if (xD <= 0 && yD <= 0) {
+				no = 270 - (int)(atan(yD / xD) * 180 / PI);
+			}
+			std::cout << "no in processString: " << no << std::endl;
+			stringPath += (std::to_string(no) + ".png");
+			 ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
 			if (pID != m_currentIndex)
 				_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 1.0f, 1000, pID, bType);
 		}
@@ -380,8 +398,27 @@ void MainGameServer::processInput()
 		glm::vec2 direction = mouseCoords - m_mainPlayer->getPosition();
 		direction = glm::normalize(direction);
 		//std::cout << mouseCoords.x << " , " << mouseCoords.y << std::endl;
-		static ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture("../Sparky-core/Textures/PNG/Bullet.png");
-		_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id,1.0f, 1000, m_currentIndex,1);
+
+		std::string stringPath = "../Sparky-core/Textures/Arrows/";
+		int no;
+		if (direction.x >= 0 && direction.y >= 0) {
+			no = 90 - (int)(atan(direction.y / direction.x) * 180 / PI);
+		}
+		if (direction.x <= 0 && direction.y >= 0) {
+			no = 270 - (int)(atan(direction.y / direction.x) * 180 / PI);
+		}
+		if (direction.x >= 0 && direction.y <= 0) {
+			no = 90 - (int)(atan(direction.y / direction.x) * 180 / PI);
+		}
+		if (direction.x <= 0 && direction.y <= 0) {
+			no = 270 - (int)(atan(direction.y / direction.x) * 180 / PI);
+		}
+		std::cout << "no in processInput: " << no << std::endl;
+		stringPath += (std::to_string(no) + ".png");
+		std::cout << "string "<<stringPath << std::endl;
+		 ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
+		_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id, 1.0f, 1000, m_currentIndex, 1);
+
 		newBulls += _bullets[_bullets.size() - 1].getData();
 		newBullCount++;
 	}
