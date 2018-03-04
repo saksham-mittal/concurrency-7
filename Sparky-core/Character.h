@@ -49,10 +49,12 @@ public:
 	int getHealth() { return m_health; }
 	glm::vec2 getDim() { return m_dim; }
 	float getMana() { return m_mana; }
+	void increaseHealth();
 	std::string getData();
 	std::string getNameScore() { return m_name + "\t\t\t" + std::to_string(m_score); }
 	//setters
 	void setData(float x, float y/*, float health, int score*/);
+	void setHeart(int heart);
 	//void increaseScore();
 
 private:

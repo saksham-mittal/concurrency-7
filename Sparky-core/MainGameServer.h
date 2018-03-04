@@ -27,6 +27,7 @@
 #include "Player.h"
 #include "Level.h"
 #include <mutex>
+#include "hearts.h"
 enum class GameStateServer { PLAY, EXIT };
 
 class MainGameServer
@@ -40,6 +41,7 @@ public:
 private:
 	void initSystems();
 	void initShaders();
+	void updateHearts();
 	void processInput();
 	void receiver();
 	void gameLoop();
@@ -66,6 +68,7 @@ private:
 
 	std::vector<Bullet> _bullets;
 	std::vector<Level*> m_levels;
+	std::vector<hearts> _hearts;
 
 	float _fps;
 	float _maxFPS;

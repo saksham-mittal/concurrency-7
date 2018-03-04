@@ -3,7 +3,7 @@
 
 Character::Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim, int speed/*, const std::vector<std::string>& levelData*/)
 {
-	m_health = 5;
+	m_health = 7;
 	m_name = name;
 	m_position = pos;
 	m_person = person;
@@ -14,6 +14,7 @@ Character::Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim,
 	m_texId = ResourceManager::getTexture(m_filePaths[m_person]).id;
 	//m_levelData = levelData;
 	//m_state = NOTSHOOTING;
+	m_score = -1;
 }
 
 Character::~Character()
@@ -28,9 +29,14 @@ void Character::setData(float x, float y/*, float health, int score*/)
 	//m_score = score;
 }
 
+void Character::setHeart(int heart)
+{
+	m_score = heart;
+}
+
 void Character::respawn()
 {
-	m_health = 5;
+	m_health = 7;
 	int x = rand() % RESPAWN_PLACES;
 	m_position = respawnPosition[x];
 }
@@ -45,6 +51,12 @@ bool Character::damageTaken(int damage)
 		return true;
 	}
 	return false;
+}
+
+void Character::increaseHealth()
+{
+	if (m_health < 7)
+		m_health++;
 }
 std::string Character::getData()
 {

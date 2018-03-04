@@ -77,6 +77,11 @@ void MainGameServer::initSystems()
 
 	initShaders();
 
+	for (int i = 0; i < 5; i++)
+	{
+		_hearts.emplace_back(i);
+	}
+
 	_spriteBatch.init();
 
 	_fpsLimiter.init(_maxFPS);
@@ -122,6 +127,7 @@ void MainGameServer::gameLoop()
 
 		updateChars();
 		updateBullets();
+		updateHearts();
 
 		//std::cout << "hii" << std::endl;
 
@@ -140,7 +146,7 @@ void MainGameServer::gameLoop()
 		drawGame();
 
 
-		std::string strData = m_mainPlayer->getData() + std::to_string(newBullCount) + "|" + newBulls;
+		std::string strData = m_mainPlayer->getData() +/* "1|" +*/ std::to_string(newBullCount) + "|" + newBulls;
 		socket->sendData(strData);
 		newBulls = "";
 		newBullCount = 0;
@@ -206,7 +212,7 @@ void MainGameServer::updateChars()
 		}
 		float health = std::stof(temp);
 
-		//score
+		//The heart consumed
 		i++;
 		temp = "";
 		while (tempData[i] != '|')
@@ -214,7 +220,12 @@ void MainGameServer::updateChars()
 			temp += tempData[i];
 			i++;
 		}
-		int score = std::stof(temp);
+		int healthToPop = std::stoi(temp);
+		if (_hearts.size() && healthToPop != -1)
+		{
+			_hearts[healthToPop].setVisiblity(false);
+		}
+
 
 		//no. Of Bullets
 		temp = "";
@@ -353,6 +364,31 @@ void MainGameServer::updateBullets()
 		}
 	}
 }
+
+void MainGameServer::updateHearts()
+{
+	for (int i = 0; i < _hearts.size(); i++)
+	{
+		glm::vec2 diff = _hearts[i].getPosition() - m_chars[m_currentIndex].getPosition();
+		if (abs(diff.x) <= 25.0f && abs(diff.y) <= 25.0f && _hearts[i].getVisiblity())
+		{
+			m_mainPlayer->setHeart(i);
+			m_mainPlayer->increaseHealth();
+			break;
+		}
+
+		else
+			m_mainPlayer->setHeart(-1);
+	}
+
+	for (int i = 0; i < _hearts.size(); i++)
+	{
+		if (_hearts[i].getVisiblity() == false)
+		{
+			_hearts[i].updateTimer();
+		}
+	}
+}
 void MainGameServer::processInput()
 {
 	SDL_Event evnt;
@@ -470,6 +506,12 @@ void MainGameServer::drawGame()
 	for (int i = 0; i < _bullets.size(); i++)
 	{
 		_bullets[i].draw(_spriteBatch);
+	}
+
+	for (int i = 0; i < _hearts.size(); i++)
+	{
+		if(_hearts[i].getVisiblity())
+			_hearts[i].draw(_spriteBatch);
 	}
 
 	int health = m_mainPlayer->getHealth();

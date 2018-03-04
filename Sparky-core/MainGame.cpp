@@ -83,6 +83,11 @@ void MainGame::initSystems()
 
 	initShaders();
 
+	for (int i = 0; i < 5; i++)
+	{
+		_hearts.emplace_back(i);
+	}
+
 	_spriteBatch.init();
 
 	_fpsLimiter.init(_maxFPS);
@@ -128,6 +133,7 @@ void MainGame::gameLoop()
 
 		updateChars();
 		updateBullets();
+		updateHearts();
 
 		/*for (int i = 0; i < _bullets.size();)
 		{
@@ -145,7 +151,7 @@ void MainGame::gameLoop()
 
 		char d[1000];
 		strcpy_s(d, m_mainPlayer->getData().c_str());
-		newBulls = std::to_string(newBullCount) + "|" + newBulls;
+		newBulls = /*"0|" + */std::to_string(newBullCount) + "|" + newBulls;
 		strcat_s(d, newBulls.c_str());
 		//std::cout << d << std::endl;
 		socket->sendBytes(d);
@@ -284,6 +290,13 @@ void MainGame::drawGame()
 		_bullets[i].draw(_spriteBatch);
 	}
 
+	for (int i = 0; i < _hearts.size(); i++)
+	{
+		if (_hearts[i].getVisiblity())
+			_hearts[i].draw(_spriteBatch);
+	}
+
+
 	int health = m_mainPlayer->getHealth();
 	float mana = 100.0f;
 	_heartPos = _camera.convertScreenToWorld(glm::vec2(40.0f, 40.0f));
@@ -353,7 +366,7 @@ void MainGame::updateChars()
 		}
 		float health = std::stof(temp);
 
-		//score
+		//getting the health taken
 		i++;
 		temp = "";
 		while (tempData[i] != '|')
@@ -361,7 +374,11 @@ void MainGame::updateChars()
 			temp += tempData[i];
 			i++;
 		}
-		int score = std::stof(temp);
+		int healthToPop = std::stoi(temp);
+		if (_hearts.size() && healthToPop != -1)
+		{
+			_hearts[healthToPop].setVisiblity(false);
+		}
 
 		//no. Of Bullets
 		temp = "";
@@ -497,6 +514,33 @@ void MainGame::updateBullets()
 			}
 			else
 				i++;
+		}
+	}
+}
+
+void MainGame::updateHearts()
+{
+	for (int i = 0; i < _hearts.size(); i++)
+	{
+		glm::vec2 diff = _hearts[i].getPosition() - m_chars[m_currentIndex].getPosition();
+		if (abs(diff.x) <= 25.0f && abs(diff.y) <= 25.0f && _hearts[i].getVisiblity())
+		{
+			m_mainPlayer->setHeart(i);
+			m_mainPlayer->increaseHealth();
+			break;
+		}
+
+		else
+			m_mainPlayer->setHeart(-1);
+
+	}
+
+
+	for (int i = 0; i < _hearts.size(); i++)
+	{
+		if (_hearts[i].getVisiblity() == false)
+		{
+			_hearts[i].updateTimer();
 		}
 	}
 }

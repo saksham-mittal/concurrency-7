@@ -25,6 +25,7 @@
 #include "Sockets.h"
 #include "Player.h"
 #include "Character.h"
+#include "hearts.h"
 #include <mutex>
 enum class GameState { PLAY, EXIT };
 
@@ -47,6 +48,7 @@ private:
 
 	void updateChars();
 	void updateBullets();
+	void updateHearts();
 	//void upDownControl();
 	//void rightLeftControl();
 
@@ -64,6 +66,7 @@ private:
 	ArrowsIoEngine::SpriteBatch _spriteBatch;
 
 	std::vector<Bullet> _bullets;
+	std::vector<hearts> _hearts;
 
 	float _fps;
 	float _maxFPS;
