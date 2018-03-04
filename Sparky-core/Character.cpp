@@ -21,11 +21,11 @@ Character::~Character()
 {
 }
 
-void Character::setData(float x, float y/*, float health, int score*/)
+void Character::setData(float x, float y, int health /*int score*/)
 {
 	m_position.x = x;
 	m_position.y = y;
-	//m_health = health;
+	m_health = health;
 	//m_score = score;
 }
 
@@ -41,13 +41,15 @@ void Character::respawn()
 	m_position = respawnPosition[x];
 }
 
-bool Character::damageTaken(int damage)
+bool Character::damageTaken(int damage, int livePlayers)
 {
 	m_health -= damage;
 	if (m_health <= 0)
 	{
-		std::cout << m_name << " DEAD" << std::endl;
-		respawn();
+		life = false;
+		std::cout << m_name << " DEAD and your rank is " << livePlayers  << std::endl;
+
+		//respawn();
 		return true;
 	}
 	return false;

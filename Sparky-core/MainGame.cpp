@@ -125,12 +125,16 @@ void MainGame::gameLoop()
 		receiver();
 
 		_inputManager.update();
-		processInput();
+		if (m_mainPlayer->getLife())
+			processInput();
+		else
+			GameState::EXIT;
 		_time += 0.01;
 
 		_camera.setPosition(m_mainPlayer->getPosition());
 		_camera.update();
 
+		updateNoPlayer();
 		updateChars();
 		updateBullets();
 		updateHearts();
@@ -282,7 +286,8 @@ void MainGame::drawGame()
 	// Drawing characters of clients
 	for (int i = 0; i < m_noOfPlayers; i++)
 	{
-		m_chars[i].draw(_spriteBatch);
+		if(m_chars[i].getLife())
+			m_chars[i].draw(_spriteBatch);
 	}
 
 	for (int i = 0; i < _bullets.size(); i++)
@@ -364,7 +369,7 @@ void MainGame::updateChars()
 			temp += tempData[i];
 			i++;
 		}
-		float health = std::stof(temp);
+		int health = std::stoi(temp);
 
 		//getting the health taken
 		i++;
@@ -477,7 +482,7 @@ void MainGame::updateChars()
 				_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 1.0f, 1000, pID, bType);
 		}
 		if (j != m_currentIndex)
-			m_chars[j].setData(x, y/*, health, score*/);
+			m_chars[j].setData(x, y, health/* score*/);
 	}
 	//m_mainPlayer->update();
 }
@@ -498,7 +503,7 @@ void MainGame::updateBullets()
 			if (abs(bulPos.x - playerPos.x) < (m_playerDim.x / 2 + m_bulletDim.x / 2) &&
 				abs(bulPos.y - playerPos.y) < (m_playerDim.y / 2 + m_bulletDim.y / 2))
 			{
-				if (m_chars[j].damageTaken(_bullets[i].getDamage()))
+				if (m_chars[j].damageTaken(_bullets[i].getDamage(), livePlayers))
 				{
 				/*if (m_bullets[i].getPlayerID() == m_currentIndex)
 				m_mainPlayer->increaseScore();*/
@@ -543,5 +548,16 @@ void MainGame::updateHearts()
 			_hearts[i].updateTimer();
 		}
 	}
+}
+
+void MainGame::updateNoPlayer()
+{
+	int count = 0;
+	for (int i = 0; i < m_chars.size(); i++)
+	{
+		if (m_chars[i].getLife())
+			count++;
+	}
+	livePlayers = count;
 }
 

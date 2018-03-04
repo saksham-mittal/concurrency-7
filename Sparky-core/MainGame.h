@@ -49,6 +49,7 @@ private:
 	void updateChars();
 	void updateBullets();
 	void updateHearts();
+	void updateNoPlayer();
 	//void upDownControl();
 	//void rightLeftControl();
 
@@ -91,5 +92,7 @@ private:
 
 	glm::vec4 _uv = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 	Color _color = { 255,255,255,255 };
+	int livePlayers;
+
 };
 

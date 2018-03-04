@@ -43,7 +43,7 @@ public:
 	void moveDOWN();
 	void moveRIGHT();
 	void moveLEFT();
-	bool damageTaken(int damage);
+	bool damageTaken(int damage, int livePlayer);
 	//getters
 	glm::vec2 getPosition() { return (m_position + glm::vec2(m_dim.x / 2, m_dim.y / 2)); }	//dimension added to get position of the centre of the character
 	int getHealth() { return m_health; }
@@ -53,8 +53,9 @@ public:
 	std::string getData();
 	std::string getNameScore() { return m_name + "\t\t\t" + std::to_string(m_score); }
 	//setters
-	void setData(float x, float y/*, float health, int score*/);
+	void setData(float x, float y, int health/* int score*/);
 	void setHeart(int heart);
+	bool getLife() { return life; }
 	//void increaseScore();
 
 private:
@@ -73,6 +74,7 @@ private:
 	std::vector<std::string> m_levelData;
 	//std::vector<Gun> m_guns;
 	int m_currentGunIndex;
+	bool life = true;
 
 	std::string m_filePaths[4] = { "../Sparky-core/Textures/Characters/char1.png","../Sparky-core/Textures/Characters/char2.png","../Sparky-core/Textures/Characters/char3.png","../Sparky-core/Textures/Characters/char4.png" };
 	//std::string m_filePaths2[6] = { "../Harry/Textures/harryPotter/Harry/harry2.png","../Harry/Textures/harryPotter/Ron/ron2.png","../Harry/Textures/harryPotter/Hermoine/hermoine2.png","../Harry/Textures/harryPotter/Ginny/ginny2.png","../Harry/Textures/harryPotter/Malfoy/malfoy2.png","../Harry/Textures/harryPotter/Luna/luna2.png" };
