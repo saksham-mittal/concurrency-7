@@ -67,6 +67,7 @@ private:
 	ArrowsIoEngine::SpriteBatch _spriteBatch;
 
 	std::vector<Level*> m_levels;
+	std::vector<std::string> m_leveldata;
 	std::vector<Bullet> _bullets;
 	std::vector<hearts> _hearts;
 

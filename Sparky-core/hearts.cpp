@@ -27,7 +27,7 @@ hearts::hearts(int index)
 		for (int x = 0; x < m_levelData[y].size(); x++)
 		{
 			if (m_levelData[y][x] == '@') {
-				heartPosition.push_back(glm::vec2(x, y));
+				heartPosition.push_back(glm::vec2(y, x));
 			}
 		}
 	}

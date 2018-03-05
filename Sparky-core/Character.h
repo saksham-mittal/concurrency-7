@@ -7,7 +7,9 @@
 #include <vector>
 //#include "Gun.h"
 #include "Bullet.h"
+#include "Level.h"
 
+const int MIN_WALL_DISTANCE = 2;
 const int RESPAWN_PLACES = 4;
 /*const int MIN_WALL_DISTANCE = 2;
 
@@ -29,7 +31,7 @@ using namespace ArrowsIoEngine;
 class Character
 {
 public:
-	Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim, int speed/*, const std::vector<std::string>& levelData*/);
+	Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim, int speed, const std::vector<std::string>& levelData);
 	~Character();
 	//void init();
 	void draw(SpriteBatch& spriteBatch);
@@ -44,6 +46,7 @@ public:
 	void moveRIGHT();
 	void moveLEFT();
 	bool damageTaken(int damage, int livePlayer);
+	void setGunType(int i) { gunID = i; }
 	//getters
 	glm::vec2 getPosition() { return (m_position + glm::vec2(m_dim.x / 2, m_dim.y / 2)); }	//dimension added to get position of the centre of the character
 	int getHealth() { return m_health; }
@@ -56,6 +59,7 @@ public:
 	void setData(float x, float y, int health/* int score*/);
 	void setHeart(int heart);
 	bool getLife() { return life; }
+	int getGunType() { return gunID; }
 	//void increaseScore();
 
 private:
@@ -72,7 +76,8 @@ private:
 	float m_mana = 100;
 	int m_score = 0;
 	std::vector<std::string> m_levelData;
-	//std::vector<Gun> m_guns;
+	
+	int gunID;
 	int m_currentGunIndex;
 	bool life = true;
 

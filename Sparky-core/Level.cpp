@@ -36,7 +36,7 @@ Level::Level(const std::string& fileName, int screenWidth, int screenHeight)
 		for (int x = 0; x < m_levelData[y].size(); x++)
 		{
 			char tile = m_levelData[y][x];
-			glm::vec4 destRect(x*TILE_WIDTH, y*TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
+			glm::vec4 destRect(y*TILE_WIDTH, x*TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
 			switch (tile)
 			{
 			case 'R':

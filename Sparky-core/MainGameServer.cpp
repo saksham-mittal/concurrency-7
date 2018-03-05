@@ -87,12 +87,14 @@ void MainGameServer::initSystems()
 
 	initialiseLevel(m_currentLevel);
 
+	m_leveldata = m_levels[m_currentLevel]->getLevelData();
+
 	_fpsLimiter.init(_maxFPS);
 
 	//m_leveldata = m_levels[m_currentLevel]->getLevelData();
 	for (int i = 0; i < m_noOfPlayers; i++)
 	{
-		m_chars.emplace_back(m_players[i].name, m_players[i].position, m_players[i].playerIndex, m_playerDim, 1/*, m_leveldata*/);
+		m_chars.emplace_back(m_players[i].name, m_players[i].position, m_players[i].playerIndex, m_playerDim, 1, m_leveldata);
 	}
 
 
@@ -309,25 +311,46 @@ void MainGameServer::updateChars()
 			i++;
 			temp = "";
 
-			std::string stringPath = "../Sparky-core/Textures/Arrows/";
-			int no;
-			if (xD >= 0 && yD >= 0) {
-				no = 90 - (int)(atan(yD / xD) * 180 / PI);
+			if (bType == 1)
+			{
+				std::string stringPath = "../Sparky-core/Textures/Arrows/";
+				int no;
+				if (xD >= 0 && yD >= 0) {
+					no = 90 - (int)(atan(yD / xD) * 180 / PI);
+				}
+				if (xD <= 0 && yD >= 0) {
+					no = (270 - (int)(atan(yD / xD) * 180 / PI)) % 360;
+				}
+				if (xD >= 0 && yD <= 0) {
+					no = 90 - (int)(atan(yD / xD) * 180 / PI);
+				}
+				if (xD <= 0 && yD <= 0) {
+					no = 270 - (int)(atan(yD / xD) * 180 / PI);
+				}
+				std::cout << "no in processString: " << no << std::endl;
+				stringPath += (std::to_string(no) + ".png");
+				ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
+				if (pID != m_currentIndex)
+					_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 10.0f, 1000, pID, bType);
 			}
-			if (xD <= 0 && yD >= 0) {
-				no = (270 - (int)(atan(yD / xD) * 180 / PI)) % 360;
+			else if (bType == 2)
+			{
+				std::string stringPath = "../Sparky-core/Textures/blade.png";
+				ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
+				if (pID != m_currentIndex)
+				{
+					_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 4.0f, 300, pID, bType);
+					_bullets.emplace_back(glm::vec2(xP, yP), -glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 4.0f, 300, pID, bType);
+				}
+					
 			}
-			if (xD >= 0 && yD <= 0) {
-				no = 90 - (int)(atan(yD / xD) * 180 / PI);
+			else
+			{
+				std::string stringPath = "../Sparky-core/Textures/circle.png";
+				ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
+				if (pID != m_currentIndex)
+					_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 2.0f, 100, pID, bType);
 			}
-			if (xD <= 0 && yD <= 0) {
-				no = 270 - (int)(atan(yD / xD) * 180 / PI);
-			}
-			std::cout << "no in processString: " << no << std::endl;
-			stringPath += (std::to_string(no) + ".png");
-			 ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
-			if (pID != m_currentIndex)
-				_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 10.0f, 1000, pID, bType);
 		}
 		if (j != m_currentIndex)
 			m_chars[j].setData(x, y, health/* score*/);
@@ -359,7 +382,7 @@ void MainGameServer::updateBullets()
 				_bullets.pop_back();
 				continue;
 			}
-			if (_bullets[i].update(/*m_leveldata*/))
+			if (_bullets[i].update(m_leveldata))
 			{
 				_bullets[i] = _bullets.back();
 				_bullets.pop_back();
@@ -452,28 +475,50 @@ void MainGameServer::processInput()
 		direction = glm::normalize(direction);
 		//std::cout << mouseCoords.x << " , " << mouseCoords.y << std::endl;
 
-		std::string stringPath = "../Sparky-core/Textures/Arrows/";
-		int no;
-		if (direction.x >= 0 && direction.y >= 0) {
-			no = 90 - (int)(atan(direction.y / direction.x) * 180 / PI);
+		if (m_mainPlayer->getGunType() == 1)
+		{
+			std::string stringPath = "../Sparky-core/Textures/Arrows/";
+			int no;
+			if (direction.x >= 0 && direction.y >= 0) {
+				no = 90 - (int)(atan(direction.y / direction.x) * 180 / PI);
+			}
+			if (direction.x <= 0 && direction.y >= 0) {
+				no = 270 - (int)(atan(direction.y / direction.x) * 180 / PI);
+			}
+			if (direction.x >= 0 && direction.y <= 0) {
+				no = 90 - (int)(atan(direction.y / direction.x) * 180 / PI);
+			}
+			if (direction.x <= 0 && direction.y <= 0) {
+				no = 270 - (int)(atan(direction.y / direction.x) * 180 / PI);
+			}
+			std::cout << "no in processInput: " << no << std::endl;
+			stringPath += (std::to_string(no) + ".png");
+			std::cout << "string " << stringPath << std::endl;
+			ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
+			_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id, 10.0f, 1000, m_currentIndex, 1);
+
 		}
-		if (direction.x <= 0 && direction.y >= 0) {
-			no = 270 - (int)(atan(direction.y / direction.x) * 180 / PI);
+		else if (m_mainPlayer->getGunType() == 2)
+		{
+			std::string stringPath = "../Sparky-core/Textures/blade.png";
+			ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
+			_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id, 4.0f, 300, m_currentIndex, 2);
+			_bullets.emplace_back(m_mainPlayer->getPosition(), -direction, texture.id, 4.0f, 300, m_currentIndex, 2);
+
 		}
-		if (direction.x >= 0 && direction.y <= 0) {
-			no = 90 - (int)(atan(direction.y / direction.x) * 180 / PI);
+		else
+		{
+			std::string stringPath = "../Sparky-core/Textures/circle.png";
+			ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
+			_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id, 2.0f, 100, m_currentIndex, 3);
+
+
 		}
-		if (direction.x <= 0 && direction.y <= 0) {
-			no = 270 - (int)(atan(direction.y / direction.x) * 180 / PI);
-		}
-		std::cout << "no in processInput: " << no << std::endl;
-		stringPath += (std::to_string(no) + ".png");
-		std::cout << "string "<<stringPath << std::endl;
-		 ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
-		_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id, 10.0f, 1000, m_currentIndex, 1);
 
 		newBulls += _bullets[_bullets.size() - 1].getData();
 		newBullCount++;
+
+
 	}
 
 	if (_inputManager.isKeyDown(SDLK_w))
@@ -492,6 +537,19 @@ void MainGameServer::processInput()
 		_camera.setScale(_camera.getScale() + SCALE_SPEED);
 	if (_inputManager.isKeyDown(SDLK_e))
 		_camera.setScale(_camera.getScale() - SCALE_SPEED);
+
+	if (_inputManager.isKeyPressed(SDLK_1))
+	{
+		m_mainPlayer->setGunType(1);
+	}
+	if (_inputManager.isKeyPressed(SDLK_2))
+	{
+		m_mainPlayer->setGunType(2);
+	}
+	if (_inputManager.isKeyPressed(SDLK_3))
+	{
+		m_mainPlayer->setGunType(3);
+	}
 
 }
 

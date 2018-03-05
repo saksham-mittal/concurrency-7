@@ -1,7 +1,7 @@
 #include "Character.h"
 #include <iostream>
 
-Character::Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim, int speed/*, const std::vector<std::string>& levelData*/)
+Character::Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim, int speed, const std::vector<std::string>& levelData)
 {
 	m_health = 7;
 	m_name = name;
@@ -12,9 +12,10 @@ Character::Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim,
 	//m_texId[SHOOTING] = ResourceManager::getTexture(m_filePaths2[m_person]).id;
 	m_speed = speed;
 	m_texId = ResourceManager::getTexture(m_filePaths[m_person]).id;
-	//m_levelData = levelData;
+	m_levelData = levelData;
 	//m_state = NOTSHOOTING;
 	m_score = -1;
+	gunID = 1;
 }
 
 Character::~Character()
@@ -75,27 +76,39 @@ void Character::draw(SpriteBatch& spriteBatch)
 
 void Character::moveUP()
 {
-	/*int distance = ((int)(m_position.y + m_dim.y)) % TILE_WIDTH;
-	if ((TILE_WIDTH - distance) < MIN_WALL_DISTANCE)
-		return; //without updating the position, as the player cannot move any closer than the min distance*/
+	if ((m_levelData[floor(m_position.x / (float)TILE_WIDTH)][ceil((m_position.y + m_dim.y) / (float)TILE_WIDTH)] != '.') ||
+		(m_levelData[floor((m_position.x + m_dim.x) / (float)TILE_WIDTH)][ceil((m_position.y + m_dim.y) / (float)TILE_WIDTH)] != '.'))		//wall above somewhere
+	{
+		int distance = ((int)(m_position.y + m_dim.y)) % TILE_WIDTH;
+		if ((TILE_WIDTH - distance) < MIN_WALL_DISTANCE)
+			return; //without updating the position, as the player cannot move any closer than the min distance 
+	}
 	m_position += glm::vec2(0.0f, m_speed);
 	return;
 }
 
 void Character::moveDOWN()
 {
-	/*int distance = ((int)(m_position.y)) % TILE_WIDTH;
-	if (distance < MIN_WALL_DISTANCE)
-		return; //without updating the position, as the player cannot move any closer than the min distance*/
+	if ((m_levelData[floor(m_position.x / (float)TILE_WIDTH)][floor((m_position.y) / (float)TILE_WIDTH) - 1] != '.') ||
+		(m_levelData[floor((m_position.x + m_dim.x) / (float)TILE_WIDTH)][floor((m_position.y) / (float)TILE_WIDTH) - 1] != '.')) //wall below somewhere
+	{
+		int distance = ((int)(m_position.y)) % TILE_WIDTH;
+		if (distance < MIN_WALL_DISTANCE)
+			return; //without updating the position, as the player cannot move any closer than the min distance 
+	}
 	m_position += glm::vec2(0.0f, -m_speed);
 	return;
 }
 
 void Character::moveLEFT()
 {	
-	/*int distance = ((int)(m_position.x)) % TILE_WIDTH;
-	if (distance < MIN_WALL_DISTANCE)
-		return; //without updating the position, as the player cannot move any closer than the min distance */
+	if ((m_levelData[floor(m_position.x / (float)TILE_WIDTH) - 1][floor((m_position.y + m_dim.y) / (float)TILE_WIDTH)] != '.') ||
+		(m_levelData[floor((m_position.x) / (float)TILE_WIDTH) - 1][floor((m_position.y) / (float)TILE_WIDTH)] != '.'))	//wall on the left somehwere
+	{
+		int distance = ((int)(m_position.x)) % TILE_WIDTH;
+		if (distance < MIN_WALL_DISTANCE)
+			return; //without updating the position, as the player cannot move any closer than the min distance 
+	}
 	m_position += glm::vec2(-m_speed, 0.0f);
 	return;
 }
@@ -103,9 +116,13 @@ void Character::moveLEFT()
 
 void Character::moveRIGHT()
 {
-	/*int distance = ((int)(m_position.x + m_dim.x)) % TILE_WIDTH;
-	if ((TILE_WIDTH - distance) < MIN_WALL_DISTANCE)
-		return;	//without updating the position, as the player cannot move any closer than the min distance*/
+	if ((m_levelData[ceil((m_position.x + m_dim.x) / (float)TILE_WIDTH)][floor((m_position.y + m_dim.y) / (float)TILE_WIDTH)] != '.') ||
+		(m_levelData[ceil((m_position.x + m_dim.x) / (float)TILE_WIDTH)][floor((m_position.y) / (float)TILE_WIDTH)] != '.'))	//wall on the right
+	{
+		int distance = ((int)(m_position.x + m_dim.x)) % TILE_WIDTH;
+		if ((TILE_WIDTH - distance) < MIN_WALL_DISTANCE)
+			return;	//without updating the position, as the player cannot move any closer than the min distance 
+	}
 	m_position += glm::vec2(m_speed, 0.0f);
 	return;
 }

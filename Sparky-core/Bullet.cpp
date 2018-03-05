@@ -1,6 +1,6 @@
 #include "Bullet.h"
 #include <ArrowsIoEngine\ResourceManager.h>
-
+#include "Level.h"
 
 
 
@@ -40,11 +40,28 @@ void Bullet::draw(ArrowsIoEngine::SpriteBatch& spriteBatch)
 	spriteBatch.draw(glm::vec4(_postion.x - _dim.x / 2, _postion.y - _dim.y / 2, _dim.x, _dim.y), uv, _textureID, 0.0f, color);
 }
 
-bool Bullet::update()
+bool Bullet::update(const std::vector<std::string>& levelData)
 {
 	_postion += _direction * _speed;
 	_lifeTime--;
 	if (_lifeTime == 0)
 		return true;
+	//check colision with a tile
+	if (levelData[(_postion.x / TILE_WIDTH)][(_postion.y / TILE_WIDTH)] != '.')
+		return true;
+	if (levelData[((_postion.x + _dim.x) / TILE_WIDTH)][(_postion.y / TILE_WIDTH)] != '.')
+		return true;
+	if (levelData[(_postion.x / TILE_WIDTH)][((_postion.y + _dim.y) / TILE_WIDTH)] != '.')
+		return true;
+	if (levelData[((_postion.x + _dim.x) / TILE_WIDTH)][((_postion.y + _dim.y) / TILE_WIDTH)] != '.')
+		return true;
 	return false;
+}
+
+int Bullet::getDamage()
+{
+	if (_bulletType == 3)
+		return _damage[1];
+	else
+		return _damage[0];
 }
