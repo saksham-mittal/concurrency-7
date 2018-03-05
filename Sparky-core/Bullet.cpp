@@ -13,7 +13,12 @@ Bullet::Bullet(glm::vec2 pos, glm::vec2 dir, GLuint textureID, float speed, int 
 	_playerID = playerID;
 	_bulletType = bulletType;
 	_textureID = textureID;
-	_dim = glm::vec2(35.0f, 35.0f);
+	if (bulletType == 1)
+		_dim = glm::vec2(30.0f, 30.0f);
+	else if (bulletType == 2)
+		_dim = glm::vec2(25.0f, 25.0f);
+	else
+		_dim = glm::vec2(20.0f, 20.0f);
 }
 
 

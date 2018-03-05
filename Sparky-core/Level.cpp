@@ -8,9 +8,10 @@ using namespace ArrowsIoEngine;
 Level::Level(const std::string& fileName, int screenWidth, int screenHeight)
 {
 
-	redBricksId = ResourceManager::getTexture("../Sparky-core/Textures/red_bricks.png").id;
-	lightBricksId = ResourceManager::getTexture("../Sparky-core/Textures/light_bricks.png").id;
-	glassId = ResourceManager::getTexture("../Sparky-core/Textures/glass.png").id;
+	brick1Id = ResourceManager::getTexture("../Sparky-core/Textures/brick1.png").id;
+	brick2Id = ResourceManager::getTexture("../Sparky-core/Textures/brick2.png").id;
+	grassId = ResourceManager::getTexture("../Sparky-core/Textures/grass.png").id;
+	floorId = ResourceManager::getTexture("../Sparky-core/Textures/floor.png").id;
 
 	//opening the level file
 	std::ifstream file;
@@ -40,16 +41,16 @@ Level::Level(const std::string& fileName, int screenWidth, int screenHeight)
 			switch (tile)
 			{
 			case 'R':
-				m_spriteBatch.draw(destRect, uvRect, redBricksId, 0.0f, color);
+				m_spriteBatch.draw(destRect, uvRect, brick2Id, 0.0f, color);
 				break;
 			case 'L':
-				m_spriteBatch.draw(destRect, uvRect, lightBricksId, 0.0f, color);
+				m_spriteBatch.draw(destRect, uvRect, brick1Id, 0.0f, color);
 				break;
 			case 'G':
-				m_spriteBatch.draw(destRect, uvRect, redBricksId, 0.0f, color);
+				m_spriteBatch.draw(destRect, uvRect, grassId, 0.0f, color);
 				break;
 			case '.':
-				m_spriteBatch.draw(destRect, uvRect, glassId, 0.0f, color);
+				m_spriteBatch.draw(destRect, uvRect, floorId, 0.0f, color);
 				break;
 			default:
 				std::cout << "Unexpected symbol " << tile << " at (" << y << ", " << x << ")\n";

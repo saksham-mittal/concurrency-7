@@ -51,7 +51,7 @@ void hearts::draw(ArrowsIoEngine::SpriteBatch & spriteBatch)
 	color.a = 255;
 
 	static GLuint texture = ResourceManager::getTexture("../Sparky-core/Textures/heart.png").id;
-	spriteBatch.draw(glm::vec4((_postion.x) * 20, (_postion.y) * 20, _dim.x, _dim.y), uv, texture, 0.0f, color);
+	spriteBatch.draw(glm::vec4((_postion.x) * 45, (_postion.y) * 45, _dim.x, _dim.y), uv, texture, 0.0f, color);
 }
 
 

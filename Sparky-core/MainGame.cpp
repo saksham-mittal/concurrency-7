@@ -84,7 +84,7 @@ void MainGame::initSystems()
 
 	initShaders();
 
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 24; i++)
 	{
 		_hearts.emplace_back(i);
 	}
