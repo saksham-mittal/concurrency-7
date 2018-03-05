@@ -25,9 +25,9 @@
 #include "Sockets.h"
 #include "Character.h"
 #include "Player.h"
+#include "hearts.h"
 #include "Level.h"
 #include <mutex>
-#include "hearts.h"
 enum class GameStateServer { PLAY, EXIT };
 
 class MainGameServer
@@ -48,8 +48,7 @@ private:
 	void gameLoop();
 	void drawGame();
 	void updateBullets();
-	// void initialiseLevel(int currentLevel);
-	// void updateBullets();
+	void initialiseLevel(int currentLevel);
 	void updateChars();
 	ArrowsIoEngine::window _window;
 	int _screenWidth;
@@ -95,5 +94,6 @@ private:
 	Color _color = { 255,255,255,255 };
 
 	int livePlayers;
+
 };
 

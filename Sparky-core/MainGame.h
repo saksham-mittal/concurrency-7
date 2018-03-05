@@ -24,8 +24,9 @@
 #include "Bullet.h"
 #include "Sockets.h"
 #include "Player.h"
-#include "Character.h"
+#include "Level.h"
 #include "hearts.h"
+#include "Character.h"
 #include <mutex>
 enum class GameState { PLAY, EXIT };
 
@@ -37,7 +38,6 @@ public:
 
 	void run();
 
-
 private:
 	void initSystems();
 	void initShaders();
@@ -45,13 +45,13 @@ private:
 	void receiver();
 	void gameLoop();
 	void drawGame();
+	
+	void initialiseLevel(int currentLevel);
 
 	void updateChars();
 	void updateBullets();
 	void updateHearts();
 	void updateNoPlayer();
-	//void upDownControl();
-	//void rightLeftControl();
 
 	ArrowsIoEngine::window _window;
 	int _screenWidth;
@@ -66,13 +66,15 @@ private:
 
 	ArrowsIoEngine::SpriteBatch _spriteBatch;
 
+	std::vector<Level*> m_levels;
 	std::vector<Bullet> _bullets;
 	std::vector<hearts> _hearts;
 
 	float _fps;
 	float _maxFPS;
 	float _time;
-
+	
+	int m_currentLevel;
 	glm::vec2 m_playerDim, m_bulletDim;
 	std::vector<Character> m_chars;
 	Character* m_mainPlayer;

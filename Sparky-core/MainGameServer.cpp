@@ -9,10 +9,11 @@ MainGameServer::MainGameServer(int noOfPlayers, int currentIndex, const std::vec
 	_screenHeight(768),
 	_gameState(GameStateServer::PLAY),
 	_maxFPS(120.0f),
+	m_currentLevel(0),
 	socket(server)
 {
 	_camera.init(_screenWidth, _screenHeight);
-	m_playerDim = glm::vec2(40.0f, 60.0f);
+	m_playerDim = glm::vec2(30.0f, 45.0f);
 	m_bulletDim = glm::vec2(15.0f, 15.0f);
 	m_noOfPlayers = noOfPlayers;
 	m_currentIndex = currentIndex;
@@ -77,12 +78,14 @@ void MainGameServer::initSystems()
 
 	initShaders();
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 20; i++)
 	{
 		_hearts.emplace_back(i);
 	}
 
 	_spriteBatch.init();
+
+	initialiseLevel(m_currentLevel);
 
 	_fpsLimiter.init(_maxFPS);
 
@@ -324,7 +327,7 @@ void MainGameServer::updateChars()
 			stringPath += (std::to_string(no) + ".png");
 			 ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
 			if (pID != m_currentIndex)
-				_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 1.0f, 1000, pID, bType);
+				_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 10.0f, 1000, pID, bType);
 		}
 		if (j != m_currentIndex)
 			m_chars[j].setData(x, y, health/* score*/);
@@ -371,8 +374,9 @@ void MainGameServer::updateHearts()
 {
 	for (int i = 0; i < _hearts.size(); i++)
 	{
-		glm::vec2 diff = _hearts[i].getPosition() - m_chars[m_currentIndex].getPosition();
-		if (abs(diff.x) <= 25.0f && abs(diff.y) <= 25.0f && _hearts[i].getVisiblity())
+		float diff_x = abs(_hearts[i].getPosition().x * 20.0f - m_chars[m_currentIndex].getPosition().x);
+		float diff_y = abs(_hearts[i].getPosition().y * 20.0f - m_chars[m_currentIndex].getPosition().y);
+		if (diff_x <= 25.0f && diff_y <= 25.0f && _hearts[i].getVisiblity())
 		{
 			m_mainPlayer->setHeart(i);
 			m_mainPlayer->increaseHealth();
@@ -466,7 +470,7 @@ void MainGameServer::processInput()
 		stringPath += (std::to_string(no) + ".png");
 		std::cout << "string "<<stringPath << std::endl;
 		 ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
-		_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id, 1.0f, 1000, m_currentIndex, 1);
+		_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id, 10.0f, 1000, m_currentIndex, 1);
 
 		newBulls += _bullets[_bullets.size() - 1].getData();
 		newBullCount++;
@@ -491,6 +495,12 @@ void MainGameServer::processInput()
 
 }
 
+
+void MainGameServer::initialiseLevel(int level)
+{
+	m_levels.push_back(new Level("../Sparky-core/Levels/level" + std::to_string(level + 1) + ".txt", _screenWidth, _screenHeight));
+}
+
 void MainGameServer::drawGame()
 {
 	glClearDepth(1.0);
@@ -507,6 +517,8 @@ void MainGameServer::drawGame()
 	glm::mat4 cameraMatrix = _camera.getCameraMatrix();
 
 	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
+
+	m_levels[m_currentLevel]->draw();
 
 	_spriteBatch.begin();
 	

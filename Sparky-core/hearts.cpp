@@ -1,11 +1,39 @@
 #include "hearts.h"
+#include <ArrowsIoEngine/Errors.h>
 
 using namespace ArrowsIoEngine;
 hearts::hearts(int index)
 {
 	_index = index;
-	_postion = heartPosition[index];
 	_dim = glm::vec2(20.0f, 20.0f);
+
+	//opening the level file
+	std::ifstream file;
+	file.open("../Sparky-core/Levels/hearts.txt");
+
+	//eeror checking
+	if (file.fail())
+		fatalError("Failed to open hearts.txt");
+
+	//loading the file data
+	std::string line;
+	while (std::getline(file, line))
+	{
+		m_levelData.push_back(line);
+	}
+
+	for (int y = 0; y < m_levelData.size(); y++)
+	{
+		for (int x = 0; x < m_levelData[y].size(); x++)
+		{
+			if (m_levelData[y][x] == '@') {
+				heartPosition.push_back(glm::vec2(x, y));
+			}
+		}
+	}
+
+	_postion = heartPosition[index];
+
 }
 
 hearts::~hearts()
@@ -23,7 +51,7 @@ void hearts::draw(ArrowsIoEngine::SpriteBatch & spriteBatch)
 	color.a = 255;
 
 	static GLuint texture = ResourceManager::getTexture("../Sparky-core/Textures/heart.png").id;
-	spriteBatch.draw(glm::vec4(_postion.x - _dim.x / 2, _postion.y - _dim.y / 2, _dim.x, _dim.y), uv, texture, 0.0f, color);
+	spriteBatch.draw(glm::vec4((_postion.x) * 20, (_postion.y) * 20, _dim.x, _dim.y), uv, texture, 0.0f, color);
 }
 
 

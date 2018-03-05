@@ -1,12 +1,26 @@
 #pragma once
-#include<string>
+#include <string>
 #include <vector>
 #include <ArrowsIoEngine/SpriteBatch.h>
+
+const int TILE_WIDTH = 20;
 
 class Level
 {
 public:
-	Level();
+	Level(const std::string& fileName, int screenWidth, int screenHeight);
 	~Level();
-};
 
+	void draw();
+	//getters
+	std::vector<std::string> getLevelData() { return m_levelData; }
+
+private:
+	//void partLevelLoader(int startx, int starty);
+	std::vector<std::string> m_levelData;
+	ArrowsIoEngine::SpriteBatch m_spriteBatch;
+	GLuint redBricksId;
+	GLuint lightBricksId;
+	GLuint glassId;
+
+};
