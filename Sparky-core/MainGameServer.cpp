@@ -397,8 +397,8 @@ void MainGameServer::updateHearts()
 {
 	for (int i = 0; i < _hearts.size(); i++)
 	{
-		float diff_x = abs(_hearts[i].getPosition().x * 20.0f - m_chars[m_currentIndex].getPosition().x);
-		float diff_y = abs(_hearts[i].getPosition().y * 20.0f - m_chars[m_currentIndex].getPosition().y);
+		float diff_x = abs(_hearts[i].getPosition().x * 45.0f - m_chars[m_currentIndex].getPosition().x);
+		float diff_y = abs(_hearts[i].getPosition().y * 45.0f - m_chars[m_currentIndex].getPosition().y);
 		if (diff_x <= 25.0f && diff_y <= 25.0f && _hearts[i].getVisiblity())
 		{
 			m_mainPlayer->setHeart(i);
