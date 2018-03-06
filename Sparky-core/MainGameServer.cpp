@@ -1,8 +1,10 @@
 #include "MainGameServer.h"
 #include <ArrowsIoEngine\Errors.h>
 #include <ArrowsIoEngine/ResourceManager.h>
+#include <omp.h>
 #define PI 3.14159265
 
+//Initializing constructor with initial values
 MainGameServer::MainGameServer(int noOfPlayers, int currentIndex, const std::vector<Player>& players, socketServer* server) :
 	_time(0.0f),
 	_screenWidth(1024),
@@ -24,6 +26,7 @@ MainGameServer::~MainGameServer()
 {
 }
 
+//function to receive the server data
 void MainGameServer::receiver()
 {
 	std::string in;
@@ -35,53 +38,52 @@ void MainGameServer::receiver()
 	mtx.unlock();
 }
 
+//main game run function
 void MainGameServer::run()
 {
-	initSystems();
+	initSystems();			//initalizing the required values
 
 	std::string strData = m_mainPlayer->getData() + "0|";
 	socket->sendData(strData);
 
-	gameLoop();
+	gameLoop();		//the main game loop
 }
 
 
 void MainGameServer::initSystems()
 {
-	ArrowsIoEngine::init();
+	ArrowsIoEngine::init();		//initializing game engine
 
-	_window.create("Arrows.Io", _screenWidth, _screenHeight, 0);
+	_window.create("Arrows.Io", _screenWidth, _screenHeight, 0);		//creating a window
 
-	initShaders();
+	initShaders();		//initializing shaders
 
-	for (int i = 0; i < 24; i++)
+	#pragma omp parallel for
+	for (int i = 0; i < 24; i++)		//loop for position of hearts
 	{
 		_hearts.emplace_back(i);
 	}
 
-	_spriteBatch.init();
+	_spriteBatch.init();		//initializing the sprite batch
 
-	initialiseLevel(m_currentLevel);
+	initialiseLevel(m_currentLevel);	//initializing level
 
 	m_leveldata = m_levels[m_currentLevel]->getLevelData();
 
-	_fpsLimiter.init(_maxFPS);
+	_fpsLimiter.init(_maxFPS);		//capping the max fps
 
-	for (int i = 0; i < m_noOfPlayers; i++)
+	for (int i = 0; i < m_noOfPlayers; i++)		// creating players
 	{
 		m_chars.emplace_back(m_players[i].name, m_players[i].position, m_players[i].playerIndex, m_playerDim, 1, m_leveldata);
 	}
 
 
-	m_mainPlayer = &(m_chars[m_currentIndex]);
+	m_mainPlayer = &(m_chars[m_currentIndex]);		//pointer to main player 
 
 	_heartTexID = ResourceManager::getTexture("../Sparky-core/Textures/Health.png").id;
-	_wandTexID = ResourceManager::getTexture("../Sparky-core/Textures/wand.png").id;
-	_redTexID = ResourceManager::getTexture("../Sparky-core/Textures/red.png").id;
-	_blueTexID = ResourceManager::getTexture("../Sparky-core/Textures/blue.png").id;
-	_grayTexID = ResourceManager::getTexture("../Sparky-core/Textures/gray.png").id;
 }
 
+//function to initialize shaders
 void MainGameServer::initShaders() {
 	_colorProgram.compileShaders("../Sparky-core/Shaders/colorShading.vert", "../Sparky-core/Shaders/colorShading.frag");
 	_colorProgram.addAttribute("vertexPosition");
@@ -90,33 +92,39 @@ void MainGameServer::initShaders() {
 	_colorProgram.linkShaders();
 }
 
+//main game loop
 void MainGameServer::gameLoop()
 {
-	while (_gameState != GameStateServer::EXIT)
+	while (_gameState != GameStateServer::EXIT)		//while the player is in playing mode
 	{
 		//used for frame time measuring
 		_fpsLimiter.begin();
-		receiver();
 
-		_inputManager.update();
+		receiver();		//receving the server data
+
+		_inputManager.update();		//updating the input manager
+
 		if (m_mainPlayer->getLife())
-			processInput();
+			processInput();				//processing the input given by the player
 		else
 			SDL_Quit();
+
 		_time += 0.01;
 
-		_camera.setPosition(m_mainPlayer->getPosition());
+		_camera.setPosition(m_mainPlayer->getPosition());		//setting camera to keep main player in center of the screen
 		_camera.update();
 
-
+		//functions to update diffrent attributes of the game 
 		updateChars();
 		updateBullets();
 		updateHearts();
 		updateLive();
 		updateNoPlayer();
 
+		//fucntion to draw the game
 		drawGame();
 
+		//sending the updated player data to server
 		std::string strData = m_mainPlayer->getData() + std::to_string(newBullCount) + "|" + newBulls;
 		socket->sendData(strData);
 		newBulls = "";
@@ -124,6 +132,7 @@ void MainGameServer::gameLoop()
 
 		_fps = _fpsLimiter.end();
 
+		//printing the fps in 10000 frames
 		static int frameCounter = 0;
 		frameCounter++;
 		if (frameCounter == 10000)
@@ -135,7 +144,7 @@ void MainGameServer::gameLoop()
 	}
 }
 
-
+//function to parse the attributes of other players from the server data
 void MainGameServer::updateChars()
 {
 	mtx.lock();
@@ -148,6 +157,7 @@ void MainGameServer::updateChars()
 	}
 	int i = 0;
 
+	//parse loop
 	for (int j = 0; j < m_noOfPlayers; j++)
 	{
 		std::string temp = "";
@@ -271,6 +281,7 @@ void MainGameServer::updateChars()
 			i++;
 			temp = "";
 
+			//rendering the bullet according to the bullet type
 			if (bType == 1)
 			{
 				std::string stringPath = "../Sparky-core/Textures/Arrows/";
@@ -315,6 +326,8 @@ void MainGameServer::updateChars()
 			m_chars[j].setData(x, y, health);
 	}
 }
+
+//function to update the new bullets
 void MainGameServer::updateBullets()
 {
 	for (int j = 0; j < m_noOfPlayers; j++)
@@ -323,12 +336,12 @@ void MainGameServer::updateBullets()
 		{
 			glm::vec2 bulPos = _bullets[i].getPosition();
 			glm::vec2 playerPos = m_chars[j].getPosition();
-			if (_bullets[i].getPlayerID() == j)
+			if (_bullets[i].getPlayerID() == j)	//skip the bullet fired by itself
 			{
 				i++;
 				continue;
 			}
-			if (abs(bulPos.x - playerPos.x) < (m_playerDim.x / 2 + m_bulletDim.x / 2) &&
+			if (abs(bulPos.x - playerPos.x) < (m_playerDim.x / 2 + m_bulletDim.x / 2) &&	//condition to hit the bullet
 				abs(bulPos.y - playerPos.y) < (m_playerDim.y / 2 + m_bulletDim.y / 2))
 			{
 				m_chars[j].damageTaken(_bullets[i].getDamage(), livePlayers, m_currentIndex, j);
@@ -336,7 +349,7 @@ void MainGameServer::updateBullets()
 				_bullets.pop_back();
 				continue;
 			}
-			if (_bullets[i].update(m_leveldata))
+			if (_bullets[i].update(m_leveldata))	//poping the bullet hitting the walls
 			{
 				_bullets[i] = _bullets.back();
 				_bullets.pop_back();
@@ -347,13 +360,14 @@ void MainGameServer::updateBullets()
 	}
 }
 
+//function to update the hearts in the map
 void MainGameServer::updateHearts()
 {
 	for (int i = 0; i < _hearts.size(); i++)
 	{
 		float diff_x = abs(_hearts[i].getPosition().x * 45.0f - m_chars[m_currentIndex].getPosition().x);
 		float diff_y = abs(_hearts[i].getPosition().y * 45.0f - m_chars[m_currentIndex].getPosition().y);
-		if (diff_x <= 25.0f && diff_y <= 25.0f && _hearts[i].getVisiblity())
+		if (diff_x <= 25.0f && diff_y <= 25.0f && _hearts[i].getVisiblity())	//if a player takes a heart
 		{
 			m_mainPlayer->setHeart(i);
 			m_mainPlayer->increaseHealth();
@@ -364,7 +378,7 @@ void MainGameServer::updateHearts()
 			m_mainPlayer->setHeart(-1);
 	}
 
-	for (int i = 0; i < _hearts.size(); i++)
+	for (int i = 0; i < _hearts.size(); i++)		//setting the timer visiblity of the heart
 	{
 		if (_hearts[i].getVisiblity() == false)
 		{
@@ -373,6 +387,7 @@ void MainGameServer::updateHearts()
 	}
 }
 
+//function to update number of live players
 void MainGameServer::updateNoPlayer()
 {
 	int count = 0;
@@ -384,6 +399,7 @@ void MainGameServer::updateNoPlayer()
 	livePlayers = count;
 }
 
+//function for updating false death to true
 void MainGameServer::updateLive()
 {
 	for (int i = 0; i < m_chars.size(); i++)
@@ -392,6 +408,8 @@ void MainGameServer::updateLive()
 			m_chars[i].setLife(true);
 	}
 }
+
+//fuction to process the input given by the player
 void MainGameServer::processInput()
 {
 	SDL_Event evnt;
@@ -401,7 +419,7 @@ void MainGameServer::processInput()
 
 	while (SDL_PollEvent(&evnt))
 	{
-		switch (evnt.type)
+		switch (evnt.type)		//recognizing the event type
 		{
 		case SDL_QUIT:
 			_gameState = GameStateServer::EXIT;
@@ -512,12 +530,13 @@ void MainGameServer::processInput()
 
 }
 
-
+//fuction to initialize the level
 void MainGameServer::initialiseLevel(int level)
 {
 	m_levels.push_back(new Level("../Sparky-core/Levels/level" + std::to_string(level + 1) + ".txt", _screenWidth, _screenHeight));
 }
 
+//function to draw the game
 void MainGameServer::drawGame()
 {
 	glClearDepth(1.0);
@@ -540,17 +559,20 @@ void MainGameServer::drawGame()
 	_spriteBatch.begin();
 	
 	// Drawing characters of clients
+	#pragma omp parallel for
 	for (int i = 0; i < m_noOfPlayers; i++)
 	{
 		if(m_chars[i].getLife())
 			m_chars[i].draw(_spriteBatch);
 	}
 
+	#pragma omp parallel for
 	for (int i = 0; i < _bullets.size(); i++)
 	{
 		_bullets[i].draw(_spriteBatch);
 	}
 
+	#pragma omp parallel for
 	for (int i = 0; i < _hearts.size(); i++)
 	{
 		if(_hearts[i].getVisiblity())
@@ -559,6 +581,8 @@ void MainGameServer::drawGame()
 
 	int health = m_mainPlayer->getHealth();
 	_heartPos = _camera.convertScreenToWorld(glm::vec2(40.0f, 40.0f));
+
+	#pragma omp parallel for
 	for (int i = 0; i < health; i++)
 	{
 		_spriteBatch.draw(glm::vec4(_heartPos.x + i * (_heartDim.x + 1.5f), _heartPos.y, _heartDim.x, _heartDim.y), _uv, _heartTexID, 5, _color);

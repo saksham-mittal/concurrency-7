@@ -3,7 +3,7 @@
 #include "Level.h"
 
 
-
+//defining the constructor
 Bullet::Bullet(glm::vec2 pos, glm::vec2 dir, GLuint textureID, float speed, int lifeTime, int playerID, int bulletType)
 {
 	_postion = pos;
@@ -26,7 +26,7 @@ Bullet::~Bullet()
 {
 }
 
-
+//function to draw the bullet
 void Bullet::draw(ArrowsIoEngine::SpriteBatch& spriteBatch)
 {
 	ArrowsIoEngine::Color color;
@@ -58,6 +58,7 @@ bool Bullet::update(const std::vector<std::string>& levelData)
 	return false;
 }
 
+//funciotn for taking the damage from the bullet type
 int Bullet::getDamage()
 {
 	if (_bulletType == 3)

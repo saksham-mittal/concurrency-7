@@ -226,7 +226,6 @@ void socketServer::select_activity()
 	addrlen = sizeof(struct sockaddr_in);
 	while (connected_clients > 0)
 	{
-		// std::cout << "connected_clients :" << connected_clients << std::endl;
 		//clear the socket fd set
 		FD_ZERO(&readfds);
 
@@ -296,7 +295,7 @@ void socketServer::select_activity()
 				//Check if it was for closing , and also read the incoming message
 				//recv does not place a null terminator at the end of the string (whilst printf %s assumes there is one).
 				valread = recv(s, buffer, MAX_BUFFER_SIZE, 0);
-				//std::cout << buffer << std::endl;
+
 				if (valread == SOCKET_ERROR)
 				{
 					int error_code = WSAGetLastError();
@@ -335,7 +334,6 @@ void socketServer::select_activity()
 					flag[i] = true;
 					buffer[valread] = '\0';
 					collectedData[i] = std::string(buffer);
-					//printf("%s:%d - %s \n", inet_ntoa(address.sin_addr), ntohs(address.sin_port), buffer);
 
 				}
 			}

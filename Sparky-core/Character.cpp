@@ -1,6 +1,7 @@
 #include "Character.h"
 #include <iostream>
 
+//initializing the defalut constructor values
 Character::Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim, int speed, const std::vector<std::string>& levelData)
 {
 	m_health = 7;
@@ -19,6 +20,7 @@ Character::~Character()
 {
 }
 
+//setting the attributes of the character
 void Character::setData(float x, float y, int health)
 {
 	m_position.x = x;
@@ -26,41 +28,47 @@ void Character::setData(float x, float y, int health)
 	m_health = health;
 }
 
+//setting the heart to take 
 void Character::setHeart(int heart)
 {
 	m_score = heart;
 }
 
+//the damage taken by the player on being hit by a bullet
 bool Character::damageTaken(int damage, int livePlayers, int callerPlayer, int playerType)
 {
 	m_health -= damage;
 	if (m_health <= 0)
 	{
+		if (callerPlayer == playerType && life == true)
+			std::cout << m_name << " You are dead and Your Rank is :  " << livePlayers << std::endl;
 		life = false;
-		if(callerPlayer == playerType)
-			std::cout << m_name << " You are dead and Your Rank is :  " << livePlayers  << std::endl;
 		return true;
 	}
 	return false;
 }
 
+//func to increase health
 void Character::increaseHealth()
 {
 	if (m_health < 7)
 		m_health++;
 }
+
+//function to get data
 std::string Character::getData()
 {
 	std::string result = std::to_string(m_position.x) + " " + std::to_string(m_position.y) + "|" + std::to_string(m_health) + "|" + std::to_string(m_score) + "|";
 	return result;
 }
 
+//function to draw the sprites
 void Character::draw(SpriteBatch& spriteBatch)
 {
-	//static GLTexture texture = ResourceManager::getTexture("../Sparky-core/Textures/PNG/CharacterRight_Standing.png");
 	spriteBatch.draw(glm::vec4(m_position.x, m_position.y, m_dim.x, m_dim.y), m_uv, m_texId, 0.0f, m_color);
 }
 
+//function to move the characters
 
 void Character::moveUP()
 {

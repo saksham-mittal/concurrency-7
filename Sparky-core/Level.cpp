@@ -7,7 +7,7 @@
 using namespace ArrowsIoEngine;
 Level::Level(const std::string& fileName, int screenWidth, int screenHeight)
 {
-
+	//initializing ids for the level
 	brick1Id = ResourceManager::getTexture("../Sparky-core/Textures/brick1.png").id;
 	brick2Id = ResourceManager::getTexture("../Sparky-core/Textures/brick2.png").id;
 	grassId = ResourceManager::getTexture("../Sparky-core/Textures/grass.png").id;
@@ -32,6 +32,8 @@ Level::Level(const std::string& fileName, int screenWidth, int screenHeight)
 
 	m_spriteBatch.init();
 	m_spriteBatch.begin();
+
+	//loops for rendering the level from text file
 	for (int y = 0; y < m_levelData.size(); y++)
 	{
 		for (int x = 0; x < m_levelData[y].size(); x++)
@@ -59,9 +61,7 @@ Level::Level(const std::string& fileName, int screenWidth, int screenHeight)
 		}
 	}
 
-
 	m_spriteBatch.end();
-
 }
 
 

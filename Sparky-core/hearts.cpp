@@ -22,6 +22,7 @@ hearts::hearts(int index)
 		m_levelData.push_back(line);
 	}
 
+	//rendering the heart at its position
 	for (int y = 0; y < m_levelData.size(); y++)
 	{
 		for (int x = 0; x < m_levelData[y].size(); x++)
@@ -40,6 +41,7 @@ hearts::~hearts()
 {
 }
 
+//function to draw the hearts
 void hearts::draw(ArrowsIoEngine::SpriteBatch & spriteBatch)
 {
 	ArrowsIoEngine::Color color;
@@ -53,10 +55,10 @@ void hearts::draw(ArrowsIoEngine::SpriteBatch & spriteBatch)
 	spriteBatch.draw(glm::vec4((_postion.x) * 45, (_postion.y) * 45, _dim.x, _dim.y), uv, texture, 0.0f, color);
 }
 
-
+//function for the visiblity of the heart
 void hearts::updateTimer()
 {
-	if (_timer < 500)
+	if (_timer < 1000)
 	{
 		_timer++;
 	}
@@ -68,6 +70,7 @@ void hearts::updateTimer()
 	
 }
 
+//the visiblity variable
 void hearts::setVisiblity(bool v)
 {
 	visible = v;
