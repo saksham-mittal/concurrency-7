@@ -47,7 +47,7 @@ namespace ArrowsIoEngine {
 		//check openGl version
 		std::printf("*** OPENGL Version  %s    *** \n", glGetString(GL_VERSION));
 
-		glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+		glClearColor(0.933f, 0.933f, 0.933f, 1.0f);
 
 		//set VSYNC
 		SDL_GL_SetSwapInterval(0);

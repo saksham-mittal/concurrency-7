@@ -16,7 +16,6 @@ public:
 	std::vector<std::string> getLevelData() { return m_levelData; }
 
 private:
-	//void partLevelLoader(int startx, int starty);
 	std::vector<std::string> m_levelData;
 	ArrowsIoEngine::SpriteBatch m_spriteBatch;
 	GLuint brick1Id;

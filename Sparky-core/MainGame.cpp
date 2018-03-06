@@ -28,24 +28,17 @@ MainGame::~MainGame()
 
 void MainGame::receiver()
 {
-	//while (m_gameState != GameState::EXIT)
-	//{
 	char in[1000];
 	socket->receiveBytes(in);
-	//std::cout <<"client receiving -- "<< in<<std::endl;
 	mtx.lock();
 	data = std::string(in);
 	mtx.unlock();
-	//}
 }
 
 
 void MainGame::run()
 {
 	initSystems();
-
-
-	//_playerTexture = ImageLoader::loadPNG("Textures/PNG/CharacterRight_Standing.png");
 	char d[1000];
 	strcpy_s(d, m_mainPlayer->getData().c_str());
 	newBulls = "0|" + newBulls;
@@ -58,29 +51,11 @@ void MainGame::run()
 	gameLoop();
 }
 
-/*void MainGame::upDownControl()
-{
-	if (_inputManager.isKeyDown(SDLK_UP))
-		m_mainPlayer->moveUP();
-
-	if (_inputManager.isKeyDown(SDLK_DOWN))
-		m_mainPlayer->moveDOWN();
-}
-
-void MainGame::rightLeftControl()
-{
-	if (_inputManager.isKeyDown(SDLK_LEFT))
-		m_mainPlayer->moveLEFT();
-
-	if (_inputManager.isKeyDown(SDLK_RIGHT))
-		m_mainPlayer->moveRIGHT();
-}*/
-
 void MainGame::initSystems()
 {
 	ArrowsIoEngine::init();
 
-	_window.create("Client", _screenWidth, _screenHeight, 0);
+	_window.create("Arrows.Io", _screenWidth, _screenHeight, 0);
 
 	initShaders();
 
@@ -97,7 +72,6 @@ void MainGame::initSystems()
 
 	_fpsLimiter.init(_maxFPS);
 
-	//m_leveldata = m_levels[m_currentLevel]->getLevelData();
 	for (int i = 0; i < m_noOfPlayers; i++)
 	{
 		m_chars.emplace_back(m_players[i].name, m_players[i].position, m_players[i].playerIndex, m_playerDim, 1, m_leveldata);
@@ -124,7 +98,6 @@ void MainGame::gameLoop()
 {
 	while (_gameState != GameState::EXIT)
 	{
-		//used for frame time measuring
 		_fpsLimiter.begin();
 
 		receiver();
@@ -149,27 +122,13 @@ void MainGame::gameLoop()
 		updateLive();
 		updateNoPlayer();
 
-		/*for (int i = 0; i < _bullets.size();)
-		{
-			if (_bullets[i].update() == true) {
-				_bullets[i] = _bullets.back();
-				_bullets.pop_back();
-			}
-			else
-			{
-				i++;
-			}
-		}*/
-
 		drawGame();
 
 		char d[1000];
 		strcpy_s(d, m_mainPlayer->getData().c_str());
-		newBulls = /*"0|" + */std::to_string(newBullCount) + "|" + newBulls;
+		newBulls = std::to_string(newBullCount) + "|" + newBulls;
 		strcat_s(d, newBulls.c_str());
-		//std::cout << d << std::endl;
 		socket->sendBytes(d);
-		//std::cout << newBulls << std::endl;
 		newBulls = "";
 		newBullCount = 0;
 
@@ -229,7 +188,6 @@ void MainGame::processInput()
 
 		glm::vec2 direction = mouseCoords - m_mainPlayer->getPosition();
 		direction = glm::normalize(direction);
-		//std::cout << mouseCoords.x << " , " << mouseCoords.y << std::endl;
 
 		if (m_mainPlayer->getGunType() == 1)
 		{
@@ -247,9 +205,7 @@ void MainGame::processInput()
 			if (direction.x <= 0 && direction.y <= 0) {
 				no = 270 - (int)(atan(direction.y / direction.x) * 180 / PI);
 			}
-			std::cout << "no in processInput: " << no << std::endl;
 			stringPath += (std::to_string(no) + ".png");
-			std::cout << "string " << stringPath << std::endl;
 			ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
 			_bullets.emplace_back(m_mainPlayer->getPosition(), direction, texture.id, 10.0f, 1000, m_currentIndex, 1);
 
@@ -273,7 +229,6 @@ void MainGame::processInput()
 		newBulls += _bullets[_bullets.size() - 1].getData();
 		newBullCount++;
 
-		//_bullets.emplace_back(m_mainPlayer->getPosition(), direction, 10.0f, 1000);
 	}	
 	
 	if (_inputManager.isKeyDown(SDLK_w))
@@ -333,7 +288,7 @@ void MainGame::drawGame()
 	// Drawing characters of clients
 	for (int i = 0; i < m_noOfPlayers; i++)
 	{
-		if(m_chars[i].getLife())
+		if(m_chars[i].getHealth()  > 0)
 			m_chars[i].draw(_spriteBatch);
 	}
 
@@ -356,12 +311,6 @@ void MainGame::drawGame()
 	{
 		_spriteBatch.draw(glm::vec4(_heartPos.x + i *( _heartDim.x + 1.5f), _heartPos.y, _heartDim.x, _heartDim.y), _uv, _heartTexID, 5, _color);
 	}
-	/*_spriteBatch.draw(glm::vec4(_heartPos.x, _heartPos.y, _heartDim.x, _heartDim.y), _uv, _heartTexID, 5, _color);
-	_spriteBatch.draw(glm::vec4(_heartPos.x + 1.5*_heartDim.x, _heartPos.y, health / 4, _heartDim.y), _uv, _redTexID, 5, _color);
-	_spriteBatch.draw(glm::vec4(_heartPos.x + 1.5*_heartDim.x + health / 4, _heartPos.y, 50.0f - health / 4, _heartDim.y), _uv, _grayTexID, 5, _color);
-	_spriteBatch.draw(glm::vec4(_heartPos.x, _heartPos.y - 2 * _heartDim.y, _heartDim.x, _heartDim.y), _uv, _wandTexID, 5, _color);
-	_spriteBatch.draw(glm::vec4(_heartPos.x + 1.5*_heartDim.x, _heartPos.y - 2 * _heartDim.y, mana / 2, _heartDim.y), _uv, _blueTexID, 5, _color);
-	_spriteBatch.draw(glm::vec4(_heartPos.x + 1.5*_heartDim.x + mana / 2, _heartPos.y - 2 * _heartDim.y, 50.0f - mana / 2, _heartDim.y), _uv, _grayTexID, 5, _color);*/
 
 	_spriteBatch.end();
 
@@ -378,11 +327,8 @@ void MainGame::updateChars()
 	mtx.lock();
 	std::string tempData = data;
 	mtx.unlock();
-	//std::cout << "tempData in Client : " << tempData << std::endl;
-	//std::cout << "updateChars called in Client." << std::endl;
 	if (tempData == "")
 	{
-		//m_mainPlayer->update();
 		return;
 	}
 	int i = 0;
@@ -525,11 +471,10 @@ void MainGame::updateChars()
 				if (xD <= 0 && yD <= 0) {
 					no = 270 - (int)(atan(yD / xD) * 180 / PI);
 				}
-				std::cout << "no in processString: " << no << std::endl;
 				stringPath += (std::to_string(no) + ".png");
 				ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
 				if (pID != m_currentIndex)
-					_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 10.0f, 1000, pID, bType);
+					_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), texture.id, 10.0f, 1000, pID, bType);
 			}
 			else if (bType == 2)
 			{
@@ -537,8 +482,8 @@ void MainGame::updateChars()
 				ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
 				if (pID != m_currentIndex)
 				{
-					_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 4.0f, 300, pID, bType);
-					_bullets.emplace_back(glm::vec2(xP, yP), -glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 4.0f, 300, pID, bType);
+					_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), texture.id, 4.0f, 300, pID, bType);
+					_bullets.emplace_back(glm::vec2(xP, yP), -glm::vec2(xD, yD), texture.id, 4.0f, 300, pID, bType);
 				}
 			}
 			else
@@ -546,13 +491,12 @@ void MainGame::updateChars()
 				std::string stringPath = "../Sparky-core/Textures/circle.png";
 				ArrowsIoEngine::GLTexture texture = ArrowsIoEngine::ResourceManager::getTexture(stringPath);
 				if (pID != m_currentIndex)
-					_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), /*m_bulletTexID[bType]*/texture.id, 2.0f, 100, pID, bType);
+					_bullets.emplace_back(glm::vec2(xP, yP), glm::vec2(xD, yD), texture.id, 2.0f, 100, pID, bType);
 			}
 		}
 		if (j != m_currentIndex)
-			m_chars[j].setData(x, y, health/* score*/);
+			m_chars[j].setData(x, y, health);
 	}
-	//m_mainPlayer->update();
 }
 
 void MainGame::updateLive()
@@ -561,6 +505,8 @@ void MainGame::updateLive()
 	{
 		if (m_chars[i].getHealth() > 0)
 			m_chars[i].setLife(true);
+		else
+			m_chars[i].setLife(false);
 	}
 }
 
@@ -580,11 +526,7 @@ void MainGame::updateBullets()
 			if (abs(bulPos.x - playerPos.x) < (m_playerDim.x / 2 + m_bulletDim.x / 2) &&
 				abs(bulPos.y - playerPos.y) < (m_playerDim.y / 2 + m_bulletDim.y / 2))
 			{
-				if (m_chars[j].damageTaken(_bullets[i].getDamage(), livePlayers))
-				{
-				/*if (m_bullets[i].getPlayerID() == m_currentIndex)
-				m_mainPlayer->increaseScore();*/
-				}
+				m_chars[j].damageTaken(_bullets[i].getDamage(), livePlayers, m_currentIndex, j);
 				_bullets[i] = _bullets.back();
 				_bullets.pop_back();
 				continue;

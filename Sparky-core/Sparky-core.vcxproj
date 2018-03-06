@@ -23,6 +23,7 @@
     <ProjectGuid>{C8259F78-1FF1-40A7-A802-89394D8DF956}</ProjectGuid>
     <RootNamespace>Sparkycore</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectName>ArrowsIo</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

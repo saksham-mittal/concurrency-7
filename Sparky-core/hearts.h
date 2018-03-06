@@ -18,7 +18,7 @@ public:
 
 	void setVisiblity(bool v);
 	bool getVisiblity() { return visible; }
-	glm::vec2 getPosition() { return _postion /*+ glm::vec2(_dim.x / 2, _dim.y / 2)*/; }	//the dimension have been added to get the position of the centre of the bullet
+	glm::vec2 getPosition() { return _postion; }	//the dimension have been added to get the position of the centre of the bullet
 	glm::vec2 getDim() { return _dim; }
 	int getHealth() { return _health; }
 	int getHeartIndex() { return _index; }

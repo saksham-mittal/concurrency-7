@@ -8,12 +8,9 @@ Character::Character(std::string name, glm::vec2 pos, int person, glm::vec2 dim,
 	m_position = pos;
 	m_person = person;
 	m_dim = dim;
-	//m_texId[NOTSHOOTING] = ResourceManager::getTexture(m_filePaths[m_person]).id;
-	//m_texId[SHOOTING] = ResourceManager::getTexture(m_filePaths2[m_person]).id;
 	m_speed = speed;
 	m_texId = ResourceManager::getTexture(m_filePaths[m_person]).id;
 	m_levelData = levelData;
-	//m_state = NOTSHOOTING;
 	m_score = -1;
 	gunID = 1;
 }
@@ -22,12 +19,11 @@ Character::~Character()
 {
 }
 
-void Character::setData(float x, float y, int health /*int score*/)
+void Character::setData(float x, float y, int health)
 {
 	m_position.x = x;
 	m_position.y = y;
 	m_health = health;
-	//m_score = score;
 }
 
 void Character::setHeart(int heart)
@@ -35,22 +31,14 @@ void Character::setHeart(int heart)
 	m_score = heart;
 }
 
-void Character::respawn()
-{
-	m_health = 7;
-	int x = rand() % RESPAWN_PLACES;
-	m_position = respawnPosition[x];
-}
-
-bool Character::damageTaken(int damage, int livePlayers)
+bool Character::damageTaken(int damage, int livePlayers, int callerPlayer, int playerType)
 {
 	m_health -= damage;
 	if (m_health <= 0)
 	{
 		life = false;
-		std::cout << m_name << " DEAD and your rank is " << livePlayers  << std::endl;
-
-		//respawn();
+		if(callerPlayer == playerType)
+			std::cout << m_name << " You are dead and Your Rank is :  " << livePlayers  << std::endl;
 		return true;
 	}
 	return false;
