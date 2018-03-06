@@ -43,6 +43,7 @@ private:
 	void initShaders();
 	void updateHearts();
 	void updateNoPlayer();
+	void updateLive();
 	void processInput();
 	void receiver();
 	void gameLoop();

@@ -133,16 +133,21 @@ void MainGame::gameLoop()
 		if (m_mainPlayer->getLife())
 			processInput();
 		else
-			GameState::EXIT;
+		{
+			SDL_Quit();
+		}
+
 		_time += 0.01;
 
 		_camera.setPosition(m_mainPlayer->getPosition());
 		_camera.update();
 
-		updateNoPlayer();
+
 		updateChars();
 		updateBullets();
 		updateHearts();
+		updateLive();
+		updateNoPlayer();
 
 		/*for (int i = 0; i < _bullets.size();)
 		{
@@ -548,6 +553,15 @@ void MainGame::updateChars()
 			m_chars[j].setData(x, y, health/* score*/);
 	}
 	//m_mainPlayer->update();
+}
+
+void MainGame::updateLive()
+{
+	for (int i = 0; i < m_chars.size(); i++)
+	{
+		if (m_chars[i].getHealth() > 0)
+			m_chars[i].setLife(true);
+	}
 }
 
 void MainGame::updateBullets()

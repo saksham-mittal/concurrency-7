@@ -49,6 +49,7 @@ private:
 	void initialiseLevel(int currentLevel);
 
 	void updateChars();
+	void updateLive();
 	void updateBullets();
 	void updateHearts();
 	void updateNoPlayer();

@@ -124,17 +124,21 @@ void MainGameServer::gameLoop()
 		receiver();
 
 		_inputManager.update();
-		if(m_mainPlayer->getLife())
+		if (m_mainPlayer->getLife())
 			processInput();
+		else
+			SDL_Quit();
 		_time += 0.01;
 
 		_camera.setPosition(m_mainPlayer->getPosition());
 		_camera.update();
 
-		updateNoPlayer();
+
 		updateChars();
 		updateBullets();
 		updateHearts();
+		updateLive();
+		updateNoPlayer();
 
 		//std::cout << "hii" << std::endl;
 
@@ -428,6 +432,15 @@ void MainGameServer::updateNoPlayer()
 			count++;
 	}
 	livePlayers = count;
+}
+
+void MainGameServer::updateLive()
+{
+	for (int i = 0; i < m_chars.size(); i++)
+	{
+		if (m_chars[i].getHealth() > 0)
+			m_chars[i].setLife(true);
+	}
 }
 void MainGameServer::processInput()
 {

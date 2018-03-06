@@ -47,6 +47,7 @@ public:
 	void moveLEFT();
 	bool damageTaken(int damage, int livePlayer);
 	void setGunType(int i) { gunID = i; }
+	void setLife(bool v) { life = v; }
 	//getters
 	glm::vec2 getPosition() { return (m_position + glm::vec2(m_dim.x / 2, m_dim.y / 2)); }	//dimension added to get position of the centre of the character
 	int getHealth() { return m_health; }
