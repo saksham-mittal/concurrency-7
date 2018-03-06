@@ -78,7 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(SolutionDir)\Dependencies\GLEW\include;$(SolutionDir)\Dependencies\GLFW\include;$(SolutionDir)\Dependencies\include;$(SolutionDir)\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\Dependencies\GLEW\lib;$(SolutionDir)\Dependencies\GLFW\lib-vc2015;$(SolutionDir)\Dependencies\libs\;$(SolutionDir)\Debug;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\Dependencies\GLEW\lib;$(SolutionDir)\Dependencies\GLFW\lib-vc2015;$(SolutionDir)\Dependencies\libs\;$(SolutionDir)\Release;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(Configuration)\Intermediates</IntDir>
   </PropertyGroup>
